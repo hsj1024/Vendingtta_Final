@@ -1,0 +1,162 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4799816001207275030
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4799816001207275025}
+  - component: {fileID: 4799816001207275024}
+  m_Layer: 0
+  m_Name: Back_obj
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4799816001207275025
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4799816001207275030}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4799816001207275024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4799816001207275030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a40c4fa9971ddea498d97c6aaf4c84b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnables:
+  - name: trash_spawner
+    objects:
+    - {fileID: 424230586544097011, guid: 498e1b4715c49354c9b2253b07a28780, type: 3}
+    - {fileID: 7396507865145778316, guid: 47b33341913de8c43b12607f795062d7, type: 3}
+    spawnPoints:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    xRange: {x: -8, y: 300}
+    yRange: {x: -4.5, y: -0.5}
+    xSpacing: 0
+    isFixed: 0
+    minSpawnCount: 10
+    maxSpawnCount: 30
+  - name: can_spawner
+    objects:
+    - {fileID: 676114036565890874, guid: 90b31af892730a244a64b1470295b21e, type: 3}
+    - {fileID: 2681313188652571683, guid: 8a53d6cb7baf153459fc0d017d923a1e, type: 3}
+    - {fileID: 3627751905190817726, guid: 831de41beb7008f41bea971cfbdb9051, type: 3}
+    spawnPoints:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    xRange: {x: -8, y: 300}
+    yRange: {x: -4.5, y: -0.5}
+    xSpacing: 0
+    isFixed: 0
+    minSpawnCount: 10
+    maxSpawnCount: 30
+  - name: bag_spawner
+    objects:
+    - {fileID: 5580072759620954700, guid: 8db160c7a0e0c07468740cbdfc40c710, type: 3}
+    - {fileID: 7226928444324622624, guid: 5b903ffcae4609e43ab4baa35ad19db5, type: 3}
+    spawnPoints:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    xRange: {x: -8, y: 300}
+    yRange: {x: -4.5, y: -0.5}
+    xSpacing: 0
+    isFixed: 0
+    minSpawnCount: 10
+    maxSpawnCount: 30
+  - name: shoes_spawner
+    objects:
+    - {fileID: 6337851564751785060, guid: 7a964e141e6ca2d4b9867a1b766040db, type: 3}
+    - {fileID: 1740749269363786797, guid: f32bc4424e9ec8e44ad192e17e84381b, type: 3}
+    - {fileID: 5697607988929705703, guid: e9c20205a5f08374199118b48a0b9352, type: 3}
+    spawnPoints:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    xRange: {x: -8, y: 300}
+    yRange: {x: -4.5, y: -0.5}
+    xSpacing: 0
+    isFixed: 0
+    minSpawnCount: 10
+    maxSpawnCount: 30
+  - name: bin_spawner
+    objects:
+    - {fileID: 4323141701227288170, guid: e138203d1de8459448edbb2866110eff, type: 3}
+    - {fileID: 7808452266710193114, guid: a28afc27b2c33124c9ddae90bf83aef2, type: 3}
+    spawnPoints:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    xRange: {x: -8, y: 300}
+    yRange: {x: -4.5, y: -0.5}
+    xSpacing: 0
+    isFixed: 0
+    minSpawnCount: 10
+    maxSpawnCount: 30
+  - name: book_spawner
+    objects:
+    - {fileID: 8368631058688279137, guid: 8980021fe91f4204a9c3b2daacd70b52, type: 3}
+    - {fileID: 2485274436631074645, guid: 13a23d289710d824691f06fb57c6d3b4, type: 3}
+    - {fileID: 6839988360331835348, guid: 239f3ce5c54702b4289c32e50d1dc7a1, type: 3}
+    - {fileID: 2180428783661365271, guid: c3fd14d2f92f0a3489e7e46ad547efee, type: 3}
+    spawnPoints:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    xRange: {x: -8, y: 300}
+    yRange: {x: -4.5, y: -0.5}
+    xSpacing: 0
+    isFixed: 0
+    minSpawnCount: 10
+    maxSpawnCount: 30
+  lockerPrefabs:
+  - {fileID: 622882532531843583, guid: 7d11c8d2f4e92c64e8aa96f9a7677900, type: 3}
+  - {fileID: 2861206494750096798, guid: 40a85ae4a68230942b3eeebcf1dd7171, type: 3}
+  locker1Prefabs:
+  - {fileID: 4490006145459924795, guid: 776ef7e0250ea1748865648755c57448, type: 3}
+  - {fileID: 70140703321046505, guid: 3830514bfbc5a004f880262d5d543ebc, type: 3}
+  - {fileID: 1287042341638766216, guid: f6a05f96f81568f49b300fe35436ae0a, type: 3}
+  - {fileID: 3592257171273164643, guid: dee297cbe66643f4cad27e41585b3f7a, type: 3}
+  - {fileID: 217230919274473509, guid: 814383fe70d45144e9897094de5a6fe2, type: 3}
+  - {fileID: 5392146361762711987, guid: 6d42d1540ef9e864fa01411362ce1df2, type: 3}
+  lockerSpacing: 37
+  locker1Spacing: 38
+  lockerStartX: 10
+  locker1StartX: 25
+  lockerXRange: {x: -8, y: 300}

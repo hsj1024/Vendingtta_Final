@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: fd8c10e61f0a4064daec49ec0b47f0a0
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - coinAnimationPrefab: {fileID: 2091339850072999673, guid: 2cf1cc38a824dcc4185e3593895c495f, type: 3}
+  - sparkleAnimationPrefab: {fileID: 6551328304530372590, guid: c50906cf420d3ca439ef8d5bf8bf77bd, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

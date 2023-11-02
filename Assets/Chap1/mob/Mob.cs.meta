@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 23462ce791781ae4eb289f68a2b64986
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - player: {instanceID: 0}
+  - mobClawRightPrefab: {fileID: 1328085869231275101, guid: ab348d473d65d8849b1b41a76f1a7faf, type: 3}
+  - mobClawLeftPrefab: {fileID: 3231394174375714383, guid: f759211ebb470be45ac4eb2fb140a59b, type: 3}
+  - coinPrefab: {fileID: 2091339850072999673, guid: 2cf1cc38a824dcc4185e3593895c495f, type: 3}
+  - coinDropAnimation: {fileID: 7400000, guid: 17154492d7ece7a4e8994a097599d6f7, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
