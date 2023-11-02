@@ -5,6 +5,6 @@ public class Chapter1 : MonoBehaviour
 {
     public void LoadChapter1()
     {
-        SceneManager.LoadScene("CutScene/CutScene1");
+        SceneManager.LoadScene("Chap1/CutScene/CutScene1");
     }
 }
