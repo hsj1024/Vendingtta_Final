@@ -54,7 +54,7 @@ public class Die : MonoBehaviour
 
     public void next3()
     {
-        SceneManager.LoadScene("Boss1_Chapter/Boss1_chapter");
+        SceneManager.LoadScene("Chap1/Boss1_Chapter/Boss1_chapter");
     }
 
     public void PlayerDied()

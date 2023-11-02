@@ -22,17 +22,18 @@ public class Mob_spawner : MonoBehaviour
     public int monstersPerWave = 5;
     public float waveInterval = 180f; // 웨이브 간격을 180초로 설정
 
+    [Header("Spawn Range Settings")]
+    public float minY = -5f;  // 스폰할 Y 좌표의 최소값
+    public float maxY = 5f;   // 스폰할 Y 좌표의 최대값
+
     private List<Mob> mobs = new List<Mob>();
 
     void Start()
     {
-        List<GameObject> malePrefabsList = new List<GameObject>(schoolStudentMalePrefabs);
-        //malePrefabsList.Add((GameObject)Resources.Load("Mob2/Shcool_M2")); // 'Shcool_M2' 프리팹 로드 및 추가
+        List<GameObject> malePrefabsList = new List<GameObject>(schoolStudentMalePrefabs);  
         schoolStudentMalePrefabs = malePrefabsList.ToArray();
 
         List<GameObject> femalePrefabsList = new List<GameObject>(schoolStudentFemalePrefabs);
-        //femalePrefabsList.Add((GameObject)Resources.Load("Mob2/Shcool_F2")); // 'Shcool_F2' 프리팹 로드 및 추가
-        //femalePrefabsList.Add((GameObject)Resources.Load("Mob2/Shcool_F3")); // 'Shcool_F3' 프리팹 로드 및 추가
         schoolStudentFemalePrefabs = femalePrefabsList.ToArray();
 
         if (player == null)
@@ -46,8 +47,9 @@ public class Mob_spawner : MonoBehaviour
 
         StartCoroutine(SpawnMonster());
 
-
     }
+
+
 
     IEnumerator SpawnMonster()
     {
@@ -117,6 +119,10 @@ public class Mob_spawner : MonoBehaviour
             int randomIndex = Random.Range(0, schoolStudentFemalePrefabs.Length);
             monsterGO = Instantiate(schoolStudentFemalePrefabs[randomIndex], spawnPosition, Quaternion.identity);
         }
+
+        // 스폰 위치의 Y 좌표를 랜덤하게 설정합니다.
+        float randomY = Random.Range(minY, maxY);
+        monsterGO.transform.position = new Vector3(spawnPosition.x, randomY, spawnPosition.z);
 
         monsterGO.transform.SetParent(this.transform);
 

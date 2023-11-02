@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
-//using System.Collections.Generic;
-//using UnityEditor.Experimental.GraphView;
+using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 
 public class Mob2 : MonoBehaviour
 {
@@ -47,6 +47,9 @@ public class Mob2 : MonoBehaviour
     public float coinAnimationSpeed = 1f;
 
 
+    private bool isPopHeadKillState = false;
+
+
     public void TakeDamage(float damage, Transform attacker, bool applyDamage = true)
     {
         if (applyDamage)
@@ -75,11 +78,38 @@ public class Mob2 : MonoBehaviour
         yield return new WaitForSeconds(knockbackDuration);
         rb.velocity = Vector2.zero;
     }
+    IEnumerator PopHeadKill()
+    {
+        Time.timeScale = 0;
+        yield return new WaitForSeconds(3);
+
+        if (isPopHeadKillState)
+        {
+            StartCoroutine(DeathAnimation());
+        }
+    }
 
     public void Die()
     {
-        Debug.Log("Die called");
-        StartCoroutine(DeathAnimation());
+        if (Random.Range(0, 10) < 10)
+        {
+            // 팝헤드킬 상태로 설정
+            isPopHeadKillState = true;
+            // 팝헤드킬 애니메이션 실행
+            StartCoroutine(PopHeadKill());
+        }
+        else
+        {
+            StartCoroutine(DeathAnimation());
+        }
+    }
+    public void AttackByPlayer()
+    {
+        if (isPopHeadKillState)
+        {
+            // 팝헤드킬 상태에서 플레이어가 공격하면 즉시 사망
+            StartCoroutine(DeathAnimation());
+        }
     }
 
     IEnumerator DeathAnimation()
@@ -87,16 +117,17 @@ public class Mob2 : MonoBehaviour
         Debug.Log("DeathAnimation started");
         float elapsedTime = 0f;
         Vector3 originalPosition = transform.position;
-        Color originalColor = GetComponent<SpriteRenderer>().color;
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        Color originalColor = spriteRenderer.color;
 
         while (elapsedTime < deathAnimationDuration)
         {
             float ratio = elapsedTime / deathAnimationDuration;
 
             // 투명도를 점점 낮춥니다.
-            Color currentColor = GetComponent<SpriteRenderer>().color;
+            Color currentColor = spriteRenderer.color;
             currentColor.a = Mathf.Lerp(originalColor.a, 0, ratio);
-            GetComponent<SpriteRenderer>().color = currentColor;
+            spriteRenderer.color = currentColor;
 
             // 아래로 움직입니다.
             Vector3 newPosition = originalPosition;
@@ -106,7 +137,14 @@ public class Mob2 : MonoBehaviour
             // 코인을 떨어트립니다. (최초 한 번만)
             if (ratio > 0 && coinPrefab != null)
             {
-                DropCoin();
+                if (isPopHeadKillState)
+                {
+                    DropCoin(2);  // 팝헤드킬 상태일 때 코인 두 개 드랍
+                }
+                else
+                {
+                    DropCoin();  // 일반 상태일 때 코인 한 개 드랍
+                }
                 coinPrefab = null;  // 코인을 한 번만 떨어트리도록 합니다.
             }
 
@@ -118,18 +156,17 @@ public class Mob2 : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void DropCoin()
+    void DropCoin(int amount = 1)
     {
         if (coinPrefab == null) return;
 
-        // 땅에 떨어지도록 y 좌표를 조절합니다.
-        Vector3 dropPosition = transform.position + new Vector3(0, -0.5f, 0);
-
-        GameObject coin = Instantiate(coinPrefab, dropPosition, Quaternion.identity);
-        coin.transform.parent = null;
-
-        // 동전이 땅에 닿을 때까지 y 좌표를 줄입니다.
-        StartCoroutine(DropCoinToGround(coin));
+        for (int i = 0; i < amount; i++)
+        {
+            Vector3 dropPosition = transform.position + new Vector3(0, -0.5f, 0);
+            GameObject coin = Instantiate(coinPrefab, dropPosition, Quaternion.identity);
+            coin.transform.parent = null;
+            StartCoroutine(DropCoinToGround(coin));
+        }
     }
 
     IEnumerator DropCoinToGround(GameObject coin)
@@ -140,6 +177,7 @@ public class Mob2 : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
     }
+
 
     private void Start()
     {
@@ -244,8 +282,7 @@ public class Mob2 : MonoBehaviour
             attackAnimationEndTime = Time.time + attackAnimationLength;
 
             animator.SetBool("IsAttackingSchool", true);
-            // playerComponent.TakeDamage(attackDamage, transform);  // 이 부분을 주석 처리 또는 제거합니다.
-            Invoke("SpawnSlashithDelay", 0.3f);  // 클로가 나타나고 데미지를 주는 함수
+            Invoke("SpawnSlashithDelay", 0.7f);  // 슬래쉬가 나타나고 데미지를 주는 함수
         }
     }
 

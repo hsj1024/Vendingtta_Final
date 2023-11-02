@@ -1,7 +1,5 @@
 using System.Collections;
 using UnityEngine;
-//using System.Collections.Generic;
-//using UnityEditor.Experimental.GraphView;
 
 public class Mob : MonoBehaviour
 {
@@ -16,7 +14,7 @@ public class Mob : MonoBehaviour
     public Transform player;
 
     [Tooltip("Health of the mob")]
-    public float health = 5f; // 몬스터의 체력
+    public float health = 5f;
 
     [Tooltip("Damage dealt by the mob's attack.")]
     public float attackDamage = 0f;
@@ -30,7 +28,6 @@ public class Mob : MonoBehaviour
     [SerializeField]
     public float knockbackDuration = 1f;
 
-
     private float nextAttackTime;
     private Animator animator;
     private bool isFacingRight;
@@ -42,7 +39,6 @@ public class Mob : MonoBehaviour
 
     [Tooltip("Prefab for the claw when the mob is facing left.")]
     public GameObject mobClawLeftPrefab;
-
 
     public event System.Action OnDeath;
 
@@ -62,18 +58,15 @@ public class Mob : MonoBehaviour
 
     [Header("Death Animation Settings")]
     [Tooltip("Duration of the death animation.")]
-    public float deathAnimationDuration = 2f;  // 사라지는데 걸리는 시간. 인스펙터에서 조절 가능하게 합니다.
+    public float deathAnimationDuration = 2f;
 
-
-
+    private bool isPopHeadKillState = false;
 
     // 몬스터가 데미지를 받으면 이 함수를 호출합니다.
     public void TakeDamage(float damage, Transform attacker, bool applyDamage = true)
     {
         if (applyDamage)
         {
-            //Debug.Log("TakeDamage called");
-
             health -= damage;
             if (health <= 0)
             {
@@ -89,37 +82,68 @@ public class Mob : MonoBehaviour
         }
     }
 
-
     IEnumerator Knockback(Transform attacker)
-{
-    
-    Vector2 knockbackDirection = (transform.position - attacker.position).normalized;
-    rb.velocity = knockbackDirection * knockbackStrength;
-    yield return new WaitForSeconds(knockbackDuration);
-    rb.velocity = Vector2.zero;
-   
-}
+    {
+        Vector2 knockbackDirection = (transform.position - attacker.position).normalized;
+        rb.velocity = knockbackDirection * knockbackStrength;
+        yield return new WaitForSeconds(knockbackDuration);
+        rb.velocity = Vector2.zero;
+    }
+
 
 
     public void Die()
     {
-        StartCoroutine(DeathAnimation());
+        if (Random.Range(0, 10) < 1)
+        {
+            // Die with pop head animation
+            StartCoroutine(PopHeadKill());
+        }
+        else
+        {
+            StartCoroutine(DeathAnimation());
+        }
+    }
+
+    IEnumerator PopHeadKill()
+    {
+        Time.timeScale = 0;
+        float blinkDuration = 1.0f;
+
+        while (true)
+        {
+            GetComponent<SpriteRenderer>().color = Color.red;
+            yield return new WaitForSecondsRealtime(blinkDuration);
+            GetComponent<SpriteRenderer>().color = Color.white;
+            yield return new WaitForSecondsRealtime(blinkDuration);
+        }
+    }
+
+    public void AttackByPlayer()
+    {
+        if (isPopHeadKillState)
+        {
+            // 팝헤드킬 상태에서 플레이어가 공격하면 즉시 사망
+            StartCoroutine(DeathAnimation());
+        }
     }
 
     IEnumerator DeathAnimation()
     {
+        Debug.Log("DeathAnimation started");
         float elapsedTime = 0f;
         Vector3 originalPosition = transform.position;
-        Color originalColor = GetComponent<SpriteRenderer>().color;
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        Color originalColor = spriteRenderer.color;
 
         while (elapsedTime < deathAnimationDuration)
         {
             float ratio = elapsedTime / deathAnimationDuration;
 
             // 투명도를 점점 낮춥니다.
-            Color currentColor = GetComponent<SpriteRenderer>().color;
+            Color currentColor = spriteRenderer.color;
             currentColor.a = Mathf.Lerp(originalColor.a, 0, ratio);
-            GetComponent<SpriteRenderer>().color = currentColor;
+            spriteRenderer.color = currentColor;
 
             // 아래로 움직입니다.
             Vector3 newPosition = originalPosition;
@@ -129,7 +153,14 @@ public class Mob : MonoBehaviour
             // 코인을 떨어트립니다. (최초 한 번만)
             if (ratio > 0 && coinPrefab != null)
             {
-                DropCoin();
+                if (isPopHeadKillState)
+                {
+                    DropCoin(2);  // 팝헤드킬 상태일 때 코인 두 개 드랍
+                }
+                else
+                {
+                    DropCoin();  // 일반 상태일 때 코인 한 개 드랍
+                }
                 coinPrefab = null;  // 코인을 한 번만 떨어트리도록 합니다.
             }
 
@@ -141,19 +172,17 @@ public class Mob : MonoBehaviour
         Destroy(gameObject);
     }
 
-
-    void DropCoin()
+    void DropCoin(int amount = 1)
     {
         if (coinPrefab == null) return;
 
-        // 땅에 떨어지도록 y 좌표를 조절합니다.
-        Vector3 dropPosition = transform.position + new Vector3(0, -0.5f, 0);
-
-        GameObject coin = Instantiate(coinPrefab, dropPosition, Quaternion.identity);
-        coin.transform.parent = null;
-
-        // 동전이 땅에 닿을 때까지 y 좌표를 줄입니다.
-        StartCoroutine(DropCoinToGround(coin));
+        for (int i = 0; i < amount; i++)
+        {
+            Vector3 dropPosition = transform.position + new Vector3(0, -0.5f, 0);
+            GameObject coin = Instantiate(coinPrefab, dropPosition, Quaternion.identity);
+            coin.transform.parent = null;
+            StartCoroutine(DropCoinToGround(coin));
+        }
     }
 
     IEnumerator DropCoinToGround(GameObject coin)
@@ -165,60 +194,37 @@ public class Mob : MonoBehaviour
         }
     }
 
-
-
-
     private void Start()
     {
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         if (playerObject == null)
         {
-            //Debug.LogError("Player object not found!");
             return;
         }
         player = playerObject.transform;
-        //Debug.Log("Player object found.");
     }
-
 
     void Awake()
     {
         moveSpeed = Random.Range(1.0f, 2.5f);
-
         rb = GetComponent<Rigidbody2D>();
         if (rb == null)
         {
             rb = gameObject.AddComponent<Rigidbody2D>();
         }
-
-        // 이 부분을 추가합니다. RigidbodyType을 Dynamic으로 설정.
         rb.bodyType = RigidbodyType2D.Dynamic;
-        rb.gravityScale = 0; // 중력을 무시
-
+        rb.gravityScale = 0;
         animator = GetComponent<Animator>();
         if (animator == null)
         {
-            //Debug.LogError("Animator not found on " + gameObject.name);
+            return;
         }
         if (transform.parent != null)
         {
             transform.parent = null;
         }
-
         DontDestroyOnLoad(gameObject);
     }
-
-    //void OnCollisionEnter2D(Collision2D collision)
-    //{
-        // if (collision.gameObject.tag == "obj")  // "obj" 태그를 가진 오브젝트와 충돌 시
-        //{
-            // 데미지를 0으로 하고, 넉백만 적용
-           // TakeDamage(0f, collision.transform, false);
-        //}
-    //}
-
-
-
 
     void Update()
     {
@@ -230,9 +236,6 @@ public class Mob : MonoBehaviour
 
     void MoveControl()
     {
-
-        //Debug.Log("MoveControl method called.");
-
         Vector3 direction = (player.position - transform.position).normalized;
         float distanceY = moveSpeed * Time.deltaTime;
         float distanceX = Mathf.Abs(player.position.x - transform.position.x);
@@ -259,20 +262,6 @@ public class Mob : MonoBehaviour
         else
         {
             animator.SetBool("IsWalkingSchool", false);
-
-        }
-
-        if (player.position.x > transform.position.x && !isFacingRight)
-        {
-            //Debug.Log("Setting isFacingRight to true");
-            transform.rotation = Quaternion.Euler(0, 180, 0);
-            isFacingRight = true;
-        }
-        else if (player.position.x < transform.position.x && isFacingRight)
-        {
-            //Debug.Log("Setting isFacingRight to false");
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-            isFacingRight = false;
         }
     }
 
@@ -282,64 +271,24 @@ public class Mob : MonoBehaviour
         {
             nextAttackTime = Time.time + attackCooldown;
             attackAnimationEndTime = Time.time + attackAnimationLength;
-
             animator.SetBool("IsAttackingSchool", true);
-            // playerComponent.TakeDamage(attackDamage, transform);  // 이 부분을 주석 처리 또는 제거합니다.
-            Invoke("SpawnClawWithDelay", 0.3f);  // 클로가 나타나고 데미지를 주는 함수
+            Invoke("SpawnClawWithDelay", 0.3f);
         }
     }
-
 
     void SpawnClawWithDelay()
     {
-        // isFacingRight 변수에 따라 사용할 프리팹을 선택합니다.
-        GameObject prefabToSpawn = isFacingRight ? mobClawRightPrefab : mobClawLeftPrefab;
-        Vector3 spawnPosition = transform.position;
+        if (player == null) return;
 
-        // 이 부분은 단순히 isFacingRight에 따라 위치를 결정합니다.
-        if (isFacingRight)
-        {
-            spawnPosition.x += 1.5f;
-        }
-        else
-        {
-            spawnPosition.x -= 1.5f;
-        }
-
-        // 프리팹을 생성합니다.
-        GameObject clawInstance = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
-
-
-        ClawBehaviour clawBehaviour = clawInstance.AddComponent<ClawBehaviour>();
-        clawBehaviour.damage = 20f;  // 클로의 공격력을 20으로 설정
-
-        // 클로가 몬스터의 자식 객체가 되지 않도록 합니다.
-        clawInstance.transform.parent = null;
-
-        Destroy(clawInstance, 0.3f);
+        GameObject clawPrefab = isFacingRight ? mobClawRightPrefab : mobClawLeftPrefab;
+        Instantiate(clawPrefab, transform.position, Quaternion.identity, transform);
     }
-
 
     void UpdateAttackAnimation()
     {
-        if (Time.time >= attackAnimationEndTime && animator.GetBool("IsAttackingSchool"))
+        if (Time.time >= attackAnimationEndTime)
         {
             animator.SetBool("IsAttackingSchool", false);
         }
     }
-
-    private class ClawBehaviour : MonoBehaviour
-    {
-        public float damage = 20f;
-
-        void OnTriggerEnter2D(Collider2D collision)
-        {
-            Player playerComponent = collision.GetComponent<Player>();
-            if (playerComponent != null)
-            {
-                playerComponent.TakeDamage(damage, transform);
-            }
-        }
-    }
-} 
-
+}

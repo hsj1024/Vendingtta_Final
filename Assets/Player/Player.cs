@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading;
 //using System.Collections.Generic;
 //using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -68,6 +69,8 @@ public class Player : MonoBehaviour
     public GameObject dieUI; // 이 변수에 DIE 텍스트와 이미지가 들어있는 GameObject를 연결합니다.
     public Die dieScript;
 
+    public Mob targetMonster;
+    private bool isPopHeadKillState = false;
 
     private void Start()
     {
@@ -183,11 +186,34 @@ private void InitializeComponents()
         if (currentEffect != null) currentEffect.SetActive(false);
     }
 
+
     private void Update()
     {
         PlayerController();
 
+        if (Input.GetKeyDown(KeyCode.Space) && isPopHeadKillState)
+        {
+            AttackMonster();
+        }
+
+        if (isPopHeadKillState)
+        {
+            HandlePopHeadKillMovement();
+        }
+        else if (Time.timeScale > 0)
+        {
+            HandleMovement();
+        }
     }
+        void AttackMonster()
+      {
+        
+        // 몬스터 사망 처리
+        targetMonster.Die();
+        // 시간 재개
+        Time.timeScale = 1;
+     }
+  
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -227,15 +253,54 @@ private void InitializeComponents()
 
     private void PlayerController()
     {
-        HandleMovement();
+        
         HandleRecovery();
+        HandleMovement();
         HandleAttack();
-
     }
 
 
 
     private void HandleMovement()
+    {
+        if (isPopHeadKillState)
+        {
+            // 팝헤드킬 상태에서는 움직임 속도를 unscaledDeltaTime으로 조정
+            HandlePopHeadKillMovement();
+        }
+        else
+        {
+            // 일반 상태에서의 움직임 처리
+            Vector2 movement = Vector2.zero;
+
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                movement.x = -1f;
+                lastDirection = "Left";
+                animator.SetBool("IsWalkingLeft", true);
+                animator.SetBool("IsWalkingRight", false);
+            }
+            else if (Input.GetKey(KeyCode.RightArrow))
+            {
+                movement.x = 1f;
+                lastDirection = "Right";
+                animator.SetBool("IsWalkingRight", true);
+                animator.SetBool("IsWalkingLeft", false);
+            }
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                movement.y = 1f;
+            }
+            else if (Input.GetKey(KeyCode.DownArrow))
+            {
+                movement.y = -1f;
+            }
+
+            rb.velocity = movement.normalized * moveSpeed;
+        }
+    }
+
+    private void HandlePopHeadKillMovement()
     {
         Vector2 movement = Vector2.zero;
 
@@ -243,15 +308,11 @@ private void InitializeComponents()
         {
             movement.x = -1f;
             lastDirection = "Left";
-            animator.SetBool("IsWalkingLeft", true);
-            animator.SetBool("IsWalkingRight", false);
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
             movement.x = 1f;
             lastDirection = "Right";
-            animator.SetBool("IsWalkingRight", true);
-            animator.SetBool("IsWalkingLeft", false);
         }
         if (Input.GetKey(KeyCode.UpArrow))
         {
@@ -262,58 +323,68 @@ private void InitializeComponents()
             movement.y = -1f;
         }
 
-        rb.velocity = movement.normalized * moveSpeed;
+        rb.velocity = movement.normalized * moveSpeed * Time.unscaledDeltaTime;
     }
-
     private void HandleAttack()
     {
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Main_attack_right") ||
-            animator.GetCurrentAnimatorStateInfo(0).IsName("Main_attack_left"))
+        if (isPopHeadKillState)
         {
-            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+            // 팝헤드킬 상태에서의 공격 로직
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                animator.SetBool("IsAttackingRight", false);
-                animator.SetBool("IsAttackingLeft", false);
-
-                if (Input.GetKey(KeyCode.LeftArrow))
-                {
-                    animator.SetBool("IsWalkingLeft", true);
-                }
-                else if (Input.GetKey(KeyCode.RightArrow))
-                {
-                    animator.SetBool("IsWalkingRight", true);
-                }
+                // 팝헤드킬 상태에서의 공격 효과, 적에게 데미지 등의 로직 구현
+                // 예: PopHeadKillAttack();
             }
         }
         else
         {
-            if ((Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.W)) && Time.time - lastFireTime >= coffeeFireCooldown)
+            // 기존 공격 로직
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Main_attack_right") ||
+                animator.GetCurrentAnimatorStateInfo(0).IsName("Main_attack_left"))
             {
-                // 마지막 발사 시간 업데이트
-                lastFireTime = Time.time;
-
-                // 기존 로직 유지
-                if (lastDirection == "Right")
+                if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
                 {
-                    animator.SetBool("IsAttackingRight", true);
-                    animator.SetBool("IsWalkingRight", false);
-                    animator.SetBool("IsAttackingLeft", false);
-                }
-                else
-                {
-                    animator.SetBool("IsAttackingLeft", true);
-                    animator.SetBool("IsWalkingLeft", false);
                     animator.SetBool("IsAttackingRight", false);
-                }
+                    animator.SetBool("IsAttackingLeft", false);
 
-                // E키를 누르면 Coffee 발사
-                if (Input.GetKeyDown(KeyCode.E))
+                    if (Input.GetKey(KeyCode.LeftArrow))
+                    {
+                        animator.SetBool("IsWalkingLeft", true);
+                    }
+                    else if (Input.GetKey(KeyCode.RightArrow))
+                    {
+                        animator.SetBool("IsWalkingRight", true);
+                    }
+                }
+            }
+            else
+            {
+                if ((Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.W)) && Time.time - lastFireTime >= coffeeFireCooldown)
                 {
-                    FireCoffee();
+                    lastFireTime = Time.time;
+
+                    if (lastDirection == "Right")
+                    {
+                        animator.SetBool("IsAttackingRight", true);
+                        animator.SetBool("IsWalkingRight", false);
+                        animator.SetBool("IsAttackingLeft", false);
+                    }
+                    else
+                    {
+                        animator.SetBool("IsAttackingLeft", true);
+                        animator.SetBool("IsWalkingLeft", false);
+                        animator.SetBool("IsAttackingRight", false);
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.E))
+                    {
+                        FireCoffee();
+                    }
                 }
             }
         }
     }
+
 
 
     private void FireCoffee()

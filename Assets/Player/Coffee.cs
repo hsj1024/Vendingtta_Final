@@ -66,13 +66,22 @@ public class Coffee : MonoBehaviour
             spriteRenderer.sprite = coffeeCrashSprite;
             rb.gravityScale = 1;
             Mob mobComponent = collision.collider.GetComponent<Mob>();
+            Mob2 mob2Component = collision.collider.GetComponent<Mob2>();
+
             if (mobComponent != null)
             {
                 mobComponent.TakeDamage(attackDamage, transform);
             }
+
+            if (mob2Component != null)
+            {
+                mob2Component.TakeDamage(attackDamage, transform);
+            }
+
             StartCoroutine(DelayAndDestroy());
         }
     }
+
 
     private IEnumerator DelayAndDestroy()
     {
