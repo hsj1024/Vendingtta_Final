@@ -1,50 +1,39 @@
 using System.Collections;
-using System.Threading;
 using UnityEngine;
+using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 
-public class Mob : MonoBehaviour
+public class Mob3: MonoBehaviour
 {
     [Header("Mob Parameters")]
-    [Tooltip("Speed at which the mob moves.")]
     public float moveSpeed;
-
-    [Tooltip("Distance from the player at which the mob will attack.")]
     public float distanceToAttack = 3f;
-
-    [Tooltip("Reference to the player's transform.")]
     public Transform player;
-
-    [Tooltip("Health of the mob")]
-    public float health = 5f;
-
-    [Tooltip("Damage dealt by the mob's attack.")]
+    public float health = 9f;
     public float attackDamage = 0f;
-
-    [Tooltip("Cooldown time between attacks.")]
-    public float attackCooldown = 1f;
+    public float attackCooldown = 1.5f;
 
     [Header("Knockback Settings")]
-    [SerializeField]
-    public float knockbackStrength = 100f;
-    [SerializeField]
-    public float knockbackDuration = 1f;
+    [SerializeField] private float knockbackStrength = 100f;
+    [SerializeField] private float knockbackDuration = 1f;
 
     private float nextAttackTime;
     private Animator animator;
     private bool isFacingRight;
     private Rigidbody2D rb;
 
-    [Header("Claw Prefabs")]
-    [Tooltip("Prefab for the claw when the mob is facing right.")]
-    public GameObject mobClawRightPrefab;
+    [Header("Slash Prefabs")]
+    public GameObject mobSlashLeftPrefab;
+    public GameObject mobSlashRightPrefab;
 
-    [Tooltip("Prefab for the claw when the mob is facing left.")]
-    public GameObject mobClawLeftPrefab;
 
     public event System.Action OnDeath;
 
-    private float attackAnimationLength = 0.5f;
+    private float attackAnimationLength = 0.8f;
     private float attackAnimationEndTime;
+
+    [Header("Death Animation Settings")]
+    public float deathAnimationDuration = 2f;
 
     [Header("Coin Drop Settings")]
     [Tooltip("Prefab for the dropped coin.")]
@@ -57,16 +46,11 @@ public class Mob : MonoBehaviour
     [Range(0.1f, 3f)]
     public float coinAnimationSpeed = 1f;
 
-    [Header("Death Animation Settings")]
-    [Tooltip("Duration of the death animation.")]
-    public float deathAnimationDuration = 2f;
 
     public static bool isPopHeadKillActive = false;
     public static bool isGlobalStop = false; // 클래스 레벨에서 정의
 
 
-
-    // 몬스터가 데미지를 받으면 이 함수를 호출합니다.
     public void TakeDamage(float damage, Transform attacker, bool applyDamage = true)
     {
         if (applyDamage)
@@ -94,29 +78,11 @@ public class Mob : MonoBehaviour
         yield return new WaitForSeconds(knockbackDuration);
         rb.velocity = Vector2.zero;
     }
-
-
-
-    public void Die()
-    {
-        if (Random.Range(0, 10) < 0)
-        {
-            
-            isGlobalStop = true; // 다른 몬스터들이 멈추도록 합니다.
-            StartCoroutine(PopHeadKill());
-        }
-        else
-        {
-            StartCoroutine(DeathAnimation());
-        }
-    }
-
     IEnumerator PopHeadKill()
     {
         isPopHeadKillActive = true;
         // 다른 몬스터들이 멈추도록 합니다.
-        
-        Mob.isGlobalStop = true; // Mob1 클래스에도 동일하게 적용
+        Mob2.isGlobalStop = true;
 
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
         // 플레이어가 공격하기 전까지 반복
@@ -130,6 +96,20 @@ public class Mob : MonoBehaviour
     }
 
 
+    public void Die()
+    {
+        if (Random.Range(0, 10) < 0)
+        {
+
+            isGlobalStop = true; // 다른 몬스터들이 멈추도록 합니다.
+            StartCoroutine(PopHeadKill());
+        }
+        else
+        {
+            StartCoroutine(DeathAnimation());
+        }
+    }
+
     public void AttackByPlayer()
     {
         // PopHeadKill 상태에서 플레이어에게 공격받으면 즉시 사망 처리
@@ -138,12 +118,11 @@ public class Mob : MonoBehaviour
             isPopHeadKillActive = false; // PopHeadKill 상태 해제
             StopCoroutine("PopHeadKill"); // 깜빡임 코루틴 정지
                                           // 다른 몬스터들이 다시 움직일 수 있도록 합니다.
-           
-            Mob.isGlobalStop = false; // Mob1 클래스에도 동일하게 적용
+            Mob2.isGlobalStop = false;
+
             StartCoroutine(DeathAnimation());
         }
     }
-
 
 
 
@@ -174,11 +153,11 @@ public class Mob : MonoBehaviour
             {
                 if (isPopHeadKillActive)
                 {
-                    DropCoin(2);  // 팝헤드킬 상태일 때 코인 두 개 드랍
+                    DropCoin(7);  // 팝헤드킬 상태일 때 코인 두 개 드랍
                 }
                 else
                 {
-                    DropCoin();  // 일반 상태일 때 코인 한 개 드랍
+                    DropCoin(5);  // 일반 상태일 때 코인 한 개 드랍
                 }
                 coinPrefab = null;  // 코인을 한 번만 떨어트리도록 합니다.
             }
@@ -213,14 +192,17 @@ public class Mob : MonoBehaviour
         }
     }
 
+
     private void Start()
     {
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         if (playerObject == null)
         {
+            //Debug.LogError("Player object not found!");
             return;
         }
         player = playerObject.transform;
+        //Debug.Log("Player object found.");
     }
 
     void Awake()
@@ -252,7 +234,7 @@ public class Mob : MonoBehaviour
         if (player == null) return;
 
         // 팝헤드킬 상태가 아니면서 전체 정지 상태일 때 움직임과 공격을 멈춤
-        if (!isPopHeadKillActive && Mob.isGlobalStop) return;
+        if (!isPopHeadKillActive && Mob2.isGlobalStop) return;
 
         MoveControl();
         AttackControl();
@@ -261,6 +243,9 @@ public class Mob : MonoBehaviour
 
     void MoveControl()
     {
+
+        //Debug.Log("MoveControl method called.");
+
         Vector3 direction = (player.position - transform.position).normalized;
         float distanceY = moveSpeed * Time.deltaTime;
         float distanceX = Mathf.Abs(player.position.x - transform.position.x);
@@ -287,6 +272,20 @@ public class Mob : MonoBehaviour
         else
         {
             animator.SetBool("IsWalkingSchool", false);
+
+        }
+
+        if (player.position.x > transform.position.x && !isFacingRight)
+        {
+            //Debug.Log("Setting isFacingRight to true");
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+            isFacingRight = true;
+        }
+        else if (player.position.x < transform.position.x && isFacingRight)
+        {
+            //Debug.Log("Setting isFacingRight to false");
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+            isFacingRight = false;
         }
     }
 
@@ -296,15 +295,16 @@ public class Mob : MonoBehaviour
         {
             nextAttackTime = Time.time + attackCooldown;
             attackAnimationEndTime = Time.time + attackAnimationLength;
+
             animator.SetBool("IsAttackingSchool", true);
-            Invoke("SpawnClawWithDelay", 0.3f);
+            Invoke("SpawnSlashithDelay", 0.7f);  // 슬래쉬가 나타나고 데미지를 주는 함수
         }
     }
 
-    void SpawnClawWithDelay()
+    void SpawnSlashithDelay()
     {
         // isFacingRight 변수에 따라 사용할 프리팹을 선택합니다.
-        GameObject prefabToSpawn = isFacingRight ? mobClawRightPrefab : mobClawLeftPrefab;
+        GameObject prefabToSpawn = isFacingRight ? mobSlashRightPrefab : mobSlashLeftPrefab;
         Vector3 spawnPosition = transform.position;
 
         // 이 부분은 단순히 isFacingRight에 따라 위치를 결정합니다.
@@ -317,69 +317,70 @@ public class Mob : MonoBehaviour
             spawnPosition.x -= 1.5f;
         }
 
-        GameObject clawInstance = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
-        ClawBehaviour clawBehaviour = clawInstance.AddComponent<ClawBehaviour>();
-        clawBehaviour.damage = 20f;
-        StartCoroutine(EnableClawColliderAfterDelay(clawBehaviour, 0.3f));
-        // 클로가 몬스터의 자식 객체가 되지 않도록 합니다.
-        clawInstance.transform.parent = null;
+        // 프리팹을 생성합니다.
+        GameObject slashInstance = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
+        SlashBehaviour slashBehaviour = slashInstance.AddComponent<SlashBehaviour>();
+        slashBehaviour.damage = 20;
+        // 몬스터의 자식 객체가 되지 않도록 합니다.
+        slashInstance.transform.parent = null;
+        StartCoroutine(EnableSlashColliderAfterDelay(slashBehaviour, 0.3f));
 
-        Destroy(clawInstance, 0.3f);
+        Destroy(slashInstance, 0.3f);
     }
-
-    IEnumerator EnableClawColliderAfterDelay(ClawBehaviour claw, float delay)
+    IEnumerator EnableSlashColliderAfterDelay(SlashBehaviour Slash, float delay)
     {
         yield return new WaitForSeconds(delay);
-        if (claw != null) // Claw 객체가 여전히 유효한지 확인
+        if (Slash != null)
         {
-            claw.EnableCollider();
+            Slash.EnableCollider();
         }
     }
+
 
 
     void UpdateAttackAnimation()
     {
-        if (Time.time >= attackAnimationEndTime)
+        if (Time.time >= attackAnimationEndTime && animator.GetBool("IsAttackingSchool"))
         {
             animator.SetBool("IsAttackingSchool", false);
         }
     }
-}
-public class ClawBehaviour : MonoBehaviour
-{
-    public float damage = 20f;
-    private Collider2D clawCollider;
-    private bool isColliderEnabled = false;
 
-    private void Awake()
+    public class SlashBehaviour : MonoBehaviour
     {
-        clawCollider = GetComponent<Collider2D>();
-        DisableCollider();
-    }
+        public float damage = 20f;
+        private Collider2D slashCollider;
+        private bool isColliderEnabled = false;
 
-    public void EnableCollider()
-    {
-        if (this == null || gameObject == null) return; // 이 객체가 삭제된 경우 함수를 바로 종료합니다.
-
-        isColliderEnabled = true;
-        clawCollider.enabled = true;
-    }
-
-
-    public void DisableCollider()
-    {
-        isColliderEnabled = false;
-        clawCollider.enabled = false;
-    }
-
-    void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (!isColliderEnabled) return;
-
-        Player playerComponent = collision.GetComponent<Player>();
-        if (playerComponent != null)
+        private void Awake()
         {
-            playerComponent.TakeDamage(damage, transform);
+            slashCollider = GetComponent<Collider2D>();
+            DisableCollider();
+        }
+
+        public void EnableCollider()
+        {
+            if (this == null || gameObject == null) return; // 이 객체가 삭제된 경우 함수를 바로 종료합니다.
+
+            isColliderEnabled = true;
+            slashCollider.enabled = true;
+        }
+
+        public void DisableCollider()
+        {
+            isColliderEnabled = false;
+            slashCollider.enabled = false;
+        }
+
+        void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (!isColliderEnabled) return;
+
+            Player playerComponent = collision.GetComponent<Player>();
+            if (playerComponent != null)
+            {
+                playerComponent.TakeDamage(damage, transform);
+            }
         }
     }
 }

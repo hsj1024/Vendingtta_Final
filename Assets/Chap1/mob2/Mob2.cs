@@ -47,15 +47,14 @@ public class Mob2 : MonoBehaviour
     public float coinAnimationSpeed = 1f;
 
 
-    private bool isPopHeadKillState = false;
+    public static bool isPopHeadKillActive = false;
+    public static bool isGlobalStop = false; // 클래스 레벨에서 정의
 
 
     public void TakeDamage(float damage, Transform attacker, bool applyDamage = true)
     {
         if (applyDamage)
         {
-            Debug.Log("TakeDamage called with damage: " + damage);
-
             health -= damage;
             if (health <= 0)
             {
@@ -65,7 +64,8 @@ public class Mob2 : MonoBehaviour
         }
 
         // 넉백 로직은 데미지 적용 여부와 상관없이 실행
-        if (rb != null)
+        // 추가: 공격자가 플레이어일 경우에만 넉백을 적용합니다.
+        if (rb != null && attacker.CompareTag("Coffee"))
         {
             StartCoroutine(Knockback(attacker));
         }
@@ -80,22 +80,28 @@ public class Mob2 : MonoBehaviour
     }
     IEnumerator PopHeadKill()
     {
-        Time.timeScale = 0;
-        yield return new WaitForSeconds(3);
+        isPopHeadKillActive = true;
+        // 다른 몬스터들이 멈추도록 합니다.
+        Mob2.isGlobalStop = true;
 
-        if (isPopHeadKillState)
+        SpriteRenderer renderer = GetComponent<SpriteRenderer>();
+        // 플레이어가 공격하기 전까지 반복
+        while (isPopHeadKillActive)
         {
-            StartCoroutine(DeathAnimation());
+            renderer.color = Color.red;
+            yield return new WaitForSeconds(1f);
+            renderer.color = Color.white;
+            yield return new WaitForSeconds(1f);
         }
     }
 
+
     public void Die()
     {
-        if (Random.Range(0, 10) < 10)
+        if (Random.Range(0, 10) < 0)
         {
-            // 팝헤드킬 상태로 설정
-            isPopHeadKillState = true;
-            // 팝헤드킬 애니메이션 실행
+
+            isGlobalStop = true; // 다른 몬스터들이 멈추도록 합니다.
             StartCoroutine(PopHeadKill());
         }
         else
@@ -105,12 +111,19 @@ public class Mob2 : MonoBehaviour
     }
     public void AttackByPlayer()
     {
-        if (isPopHeadKillState)
+        // PopHeadKill 상태에서 플레이어에게 공격받으면 즉시 사망 처리
+        if (isPopHeadKillActive)
         {
-            // 팝헤드킬 상태에서 플레이어가 공격하면 즉시 사망
+            isPopHeadKillActive = false; // PopHeadKill 상태 해제
+            StopCoroutine("PopHeadKill"); // 깜빡임 코루틴 정지
+                                          // 다른 몬스터들이 다시 움직일 수 있도록 합니다.
+            Mob2.isGlobalStop = false;
+
             StartCoroutine(DeathAnimation());
         }
     }
+
+
 
     IEnumerator DeathAnimation()
     {
@@ -137,7 +150,7 @@ public class Mob2 : MonoBehaviour
             // 코인을 떨어트립니다. (최초 한 번만)
             if (ratio > 0 && coinPrefab != null)
             {
-                if (isPopHeadKillState)
+                if (isPopHeadKillActive)
                 {
                     DropCoin(2);  // 팝헤드킬 상태일 때 코인 두 개 드랍
                 }
@@ -194,33 +207,34 @@ public class Mob2 : MonoBehaviour
     void Awake()
     {
         moveSpeed = Random.Range(1.0f, 2.5f);
-
         rb = GetComponent<Rigidbody2D>();
         if (rb == null)
         {
             rb = gameObject.AddComponent<Rigidbody2D>();
         }
-
-        // 이 부분을 추가합니다. RigidbodyType을 Dynamic으로 설정.
         rb.bodyType = RigidbodyType2D.Dynamic;
-        rb.gravityScale = 0; // 중력을 무시
-
+        rb.gravityScale = 0;
+        rb.mass = 10f; // Mass 값을 높여서 다른 오브젝트에 의한 밀림을 방지합니다.
         animator = GetComponent<Animator>();
         if (animator == null)
         {
-            //Debug.LogError("Animator not found on " + gameObject.name);
+            return;
         }
         if (transform.parent != null)
         {
             transform.parent = null;
         }
-
         DontDestroyOnLoad(gameObject);
     }
 
     void Update()
     {
+        // 플레이어가 없으면 아무것도 하지 않음
         if (player == null) return;
+
+        // 팝헤드킬 상태가 아니면서 전체 정지 상태일 때 움직임과 공격을 멈춤
+        if (!isPopHeadKillActive && Mob2.isGlobalStop) return;
+
         MoveControl();
         AttackControl();
         UpdateAttackAnimation();
@@ -304,15 +318,21 @@ public class Mob2 : MonoBehaviour
 
         // 프리팹을 생성합니다.
         GameObject slashInstance = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
-
-
         SlashBehaviour slashBehaviour = slashInstance.AddComponent<SlashBehaviour>();
-        slashBehaviour.damage = 20f;  // 클로의 공격력을 20으로 설정
-
+        slashBehaviour.damage = 20;
         // 몬스터의 자식 객체가 되지 않도록 합니다.
         slashInstance.transform.parent = null;
+        StartCoroutine(EnableSlashColliderAfterDelay(slashBehaviour, 0.3f));
 
         Destroy(slashInstance, 0.3f);
+    }
+    IEnumerator EnableSlashColliderAfterDelay(SlashBehaviour Slash, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (Slash != null) 
+        {
+            Slash.EnableCollider();
+        }
     }
 
     void UpdateAttackAnimation()
@@ -323,12 +343,36 @@ public class Mob2 : MonoBehaviour
         }
     }
 
-    private class SlashBehaviour : MonoBehaviour
+    public class SlashBehaviour : MonoBehaviour
     {
         public float damage = 20f;
+        private Collider2D slashCollider;
+        private bool isColliderEnabled = false;
+
+        private void Awake()
+        {
+            slashCollider = GetComponent<Collider2D>();
+            DisableCollider();
+        }
+
+        public void EnableCollider()
+        {
+            if (this == null || gameObject == null) return; // 이 객체가 삭제된 경우 함수를 바로 종료합니다.
+
+            isColliderEnabled = true;
+            slashCollider.enabled = true;
+        }
+
+        public void DisableCollider()
+        {
+            isColliderEnabled = false;
+            slashCollider.enabled = false;
+        }
 
         void OnTriggerEnter2D(Collider2D collision)
         {
+            if (!isColliderEnabled) return;
+
             Player playerComponent = collision.GetComponent<Player>();
             if (playerComponent != null)
             {

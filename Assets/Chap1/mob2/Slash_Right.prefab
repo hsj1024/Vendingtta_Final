@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -1053417456348592584}
   m_Layer: 10
   m_Name: Slash_Right
-  m_TagString: Claw_right
+  m_TagString: Slash_right
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

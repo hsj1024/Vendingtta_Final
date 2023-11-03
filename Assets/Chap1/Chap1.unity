@@ -1108,6 +1108,8 @@ MonoBehaviour:
   speed: 5
   minBounds: {x: -8, y: -5}
   maxBounds: {x: 275, y: 1.5}
+  closeUpSize: 2
+  closeUpSpeed: 5
 --- !u!1 &528702928
 GameObject:
   m_ObjectHideFlags: 0
@@ -2095,8 +2097,10 @@ MonoBehaviour:
   - {fileID: 9189595583124661761, guid: 848e75b2f2f319044bac01d9e5cb5de2, type: 3}
   schoolStudentFemalePrefabs:
   - {fileID: 3324791582701073720, guid: df7afbcfd68146847865fd07131423e6, type: 3}
-  - {fileID: 5855581489807316105, guid: bf79e0823d5afbb4cb09c71827a1fa1c, type: 3}
   - {fileID: 5370538536870015116, guid: 9d868d5d3e9d26a47abac5cfd4175269, type: 3}
+  eliteMonsterPrefabs:
+  - {fileID: 833039919099588952, guid: afa23d0a93a8a094abcfa847fd5f46c8, type: 3}
+  - {fileID: 5855581489807316105, guid: bf79e0823d5afbb4cb09c71827a1fa1c, type: 3}
   player: {fileID: 1996132928}
   spawnInterval: 7
   spawnRateAcceleration: 0.05
@@ -4130,6 +4134,7 @@ MonoBehaviour:
   xOffset: 0
   dieUI: {fileID: 869157744}
   dieScript: {fileID: 869157746}
+  targetMonster: {fileID: 0}
 --- !u!1 &1996948467 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4799816001207275030, guid: ba3f24a4be351b144879d4372bd0cbeb, type: 3}

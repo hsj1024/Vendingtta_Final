@@ -200,20 +200,17 @@ private void InitializeComponents()
         {
             HandlePopHeadKillMovement();
         }
-        else if (Time.timeScale > 0)
+        else
         {
             HandleMovement();
         }
     }
-        void AttackMonster()
-      {
-        
+    void AttackMonster()
+    {
         // 몬스터 사망 처리
         targetMonster.Die();
-        // 시간 재개
-        Time.timeScale = 1;
-     }
-  
+    }
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -224,6 +221,12 @@ private void InitializeComponents()
             StartCoroutine(Knockback(collision.transform));
         }
         else if (collision.CompareTag("Claw_right") || collision.CompareTag("Claw_left"))
+        {
+            // Claw에 닿았을 때 (체력 감소와 넉백 발생)
+            TakeDamage(20f, collision.transform);
+        }
+
+        else if (collision.CompareTag("Slash_right") || collision.CompareTag("Slash_left"))
         {
             // Claw에 닿았을 때 (체력 감소와 넉백 발생)
             TakeDamage(20f, collision.transform);
@@ -247,8 +250,6 @@ private void InitializeComponents()
             TakeDamage(20f, collision.transform);
         }
 
-
-
     }
 
     private void PlayerController()
@@ -263,42 +264,34 @@ private void InitializeComponents()
 
     private void HandleMovement()
     {
-        if (isPopHeadKillState)
-        {
-            // 팝헤드킬 상태에서는 움직임 속도를 unscaledDeltaTime으로 조정
-            HandlePopHeadKillMovement();
-        }
-        else
-        {
-            // 일반 상태에서의 움직임 처리
-            Vector2 movement = Vector2.zero;
+        Vector2 movement = Vector2.zero;
 
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                movement.x = -1f;
-                lastDirection = "Left";
-                animator.SetBool("IsWalkingLeft", true);
-                animator.SetBool("IsWalkingRight", false);
-            }
-            else if (Input.GetKey(KeyCode.RightArrow))
-            {
-                movement.x = 1f;
-                lastDirection = "Right";
-                animator.SetBool("IsWalkingRight", true);
-                animator.SetBool("IsWalkingLeft", false);
-            }
-            if (Input.GetKey(KeyCode.UpArrow))
-            {
-                movement.y = 1f;
-            }
-            else if (Input.GetKey(KeyCode.DownArrow))
-            {
-                movement.y = -1f;
-            }
-
-            rb.velocity = movement.normalized * moveSpeed;
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            movement.x = -1f;
+            lastDirection = "Left";
+            animator.SetBool("IsWalkingLeft", true);
+            animator.SetBool("IsWalkingRight", false);
         }
+        else if (Input.GetKey(KeyCode.RightArrow))
+        {
+            movement.x = 1f;
+            lastDirection = "Right";
+            animator.SetBool("IsWalkingRight", true);
+            animator.SetBool("IsWalkingLeft", false);
+        }
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            movement.y = 1f;
+        }
+        else if (Input.GetKey(KeyCode.DownArrow))
+        {
+            movement.y = -1f;
+        }
+
+        rb.velocity = movement.normalized * moveSpeed;
     }
+
 
     private void HandlePopHeadKillMovement()
     {
@@ -323,17 +316,16 @@ private void InitializeComponents()
             movement.y = -1f;
         }
 
-        rb.velocity = movement.normalized * moveSpeed * Time.unscaledDeltaTime;
+        rb.velocity = movement.normalized * moveSpeed;
     }
     private void HandleAttack()
     {
         if (isPopHeadKillState)
         {
-            // 팝헤드킬 상태에서의 공격 로직
+            
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                // 팝헤드킬 상태에서의 공격 효과, 적에게 데미지 등의 로직 구현
-                // 예: PopHeadKillAttack();
+                
             }
         }
         else

@@ -16,6 +16,9 @@ TagManager:
   - boundary
   - Cabinet
   - CoffeeSpawnPoint
+  - enemy
+  - Slash_left
+  - Slash_right
   layers:
   - Default
   - TransparentFX
