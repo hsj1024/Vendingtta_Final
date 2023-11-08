@@ -35,11 +35,13 @@ public class Mob : MonoBehaviour
     private Rigidbody2D rb;
 
     [Header("Claw Prefabs")]
-    [Tooltip("Prefab for the claw when the mob is facing right.")]
     public GameObject mobClawRightPrefab;
-
-    [Tooltip("Prefab for the claw when the mob is facing left.")]
     public GameObject mobClawLeftPrefab;
+
+    [Header("Attack Settings")]
+    [Tooltip("Delay before the claw ")]
+    [SerializeField]
+    private float clawSpawnDelay = 0.3f;
 
     public event System.Action OnDeath;
 
@@ -89,11 +91,20 @@ public class Mob : MonoBehaviour
 
     IEnumerator Knockback(Transform attacker)
     {
+        // 회전을 고정하고 넉백 시작
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
         Vector2 knockbackDirection = (transform.position - attacker.position).normalized;
         rb.velocity = knockbackDirection * knockbackStrength;
+
+        // 넉백 동안 몬스터가 이동할 수 있도록 X와 Y 위치 고정을 해제합니다.
         yield return new WaitForSeconds(knockbackDuration);
+
+        // 넉백이 끝나면 모든 움직임을 중지하고 원래대로 위치 고정을 적용합니다.
         rb.velocity = Vector2.zero;
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
     }
+
 
 
 
@@ -297,7 +308,8 @@ public class Mob : MonoBehaviour
             nextAttackTime = Time.time + attackCooldown;
             attackAnimationEndTime = Time.time + attackAnimationLength;
             animator.SetBool("IsAttackingSchool", true);
-            Invoke("SpawnClawWithDelay", 0.3f);
+            // Invoke the method with the delay specified in the Inspector
+            Invoke("SpawnClawWithDelay", clawSpawnDelay);
         }
     }
 
@@ -307,24 +319,17 @@ public class Mob : MonoBehaviour
         GameObject prefabToSpawn = isFacingRight ? mobClawRightPrefab : mobClawLeftPrefab;
         Vector3 spawnPosition = transform.position;
 
-        // 이 부분은 단순히 isFacingRight에 따라 위치를 결정합니다.
-        if (isFacingRight)
-        {
-            spawnPosition.x += 1.5f;
-        }
-        else
-        {
-            spawnPosition.x -= 1.5f;
-        }
+        // 몬스터가 바라보는 방향에 따라 생성 위치를 조정합니다.
+        spawnPosition.x += isFacingRight ? 1.5f : -1.5f;
 
         GameObject clawInstance = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
         ClawBehaviour clawBehaviour = clawInstance.AddComponent<ClawBehaviour>();
-        clawBehaviour.damage = 20f;
+        clawBehaviour.damage = attackDamage;
         StartCoroutine(EnableClawColliderAfterDelay(clawBehaviour, 0.3f));
-        // 클로가 몬스터의 자식 객체가 되지 않도록 합니다.
+        // claw가 몬스터의 자식 객체가 되지 않도록 합니다 (몬스터가 움직일 때 같이 움직이지 않도록)
         clawInstance.transform.parent = null;
 
-        Destroy(clawInstance, 0.3f);
+        Destroy(clawInstance, 0.3f); // 짧은 시간 후에 claw를 파괴합니다.
     }
 
     IEnumerator EnableClawColliderAfterDelay(ClawBehaviour claw, float delay)
@@ -354,7 +359,7 @@ public class ClawBehaviour : MonoBehaviour
     private void Awake()
     {
         clawCollider = GetComponent<Collider2D>();
-        DisableCollider();
+        //DisableCollider();
     }
 
     public void EnableCollider()
@@ -366,11 +371,7 @@ public class ClawBehaviour : MonoBehaviour
     }
 
 
-    public void DisableCollider()
-    {
-        isColliderEnabled = false;
-        clawCollider.enabled = false;
-    }
+    
 
     void OnTriggerEnter2D(Collider2D collision)
     {

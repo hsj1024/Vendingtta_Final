@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1446085452092139364}
   - component: {fileID: 6114650121910017827}
   - component: {fileID: 4922737384200703135}
-  - component: {fileID: -8315404695559459788}
   m_Layer: 12
   m_Name: Mob_claw_right
   m_TagString: Claw_right
@@ -123,15 +122,3 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.93, y: 0.77000004}
   m_Direction: 0
---- !u!114 &-8315404695559459788
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1328085869231275101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1cb938767347134ab757549eb525e80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

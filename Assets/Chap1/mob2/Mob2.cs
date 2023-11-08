@@ -46,6 +46,10 @@ public class Mob2 : MonoBehaviour
     [Range(0.1f, 3f)]
     public float coinAnimationSpeed = 1f;
 
+    [Header("Attack Settings")]
+    [Tooltip("Delay before the claw ")]
+    [SerializeField]
+    private float slashSpawnDelay = 0.3f;
 
     public static bool isPopHeadKillActive = false;
     public static bool isGlobalStop = false; // 클래스 레벨에서 정의
@@ -73,11 +77,21 @@ public class Mob2 : MonoBehaviour
 
     IEnumerator Knockback(Transform attacker)
     {
+        // 회전을 고정하고 넉백 시작
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
         Vector2 knockbackDirection = (transform.position - attacker.position).normalized;
         rb.velocity = knockbackDirection * knockbackStrength;
+
+        // 넉백 동안 몬스터가 이동할 수 있도록 X와 Y 위치 고정을 해제합니다.
         yield return new WaitForSeconds(knockbackDuration);
+
+        // 넉백이 끝나면 모든 움직임을 중지하고 원래대로 위치 고정을 적용합니다.
         rb.velocity = Vector2.zero;
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
     }
+
+
     IEnumerator PopHeadKill()
     {
         isPopHeadKillActive = true;
@@ -294,42 +308,34 @@ public class Mob2 : MonoBehaviour
         {
             nextAttackTime = Time.time + attackCooldown;
             attackAnimationEndTime = Time.time + attackAnimationLength;
-
             animator.SetBool("IsAttackingSchool", true);
-            Invoke("SpawnSlashithDelay", 0.7f);  // 슬래쉬가 나타나고 데미지를 주는 함수
+            // Invoke the method with the delay specified in the Inspector
+            Invoke("SpawnSlashWithDelay", slashSpawnDelay);
         }
     }
 
-    void SpawnSlashithDelay()
+    void SpawnSlashWithDelay()
     {
         // isFacingRight 변수에 따라 사용할 프리팹을 선택합니다.
         GameObject prefabToSpawn = isFacingRight ? mobSlashRightPrefab : mobSlashLeftPrefab;
         Vector3 spawnPosition = transform.position;
 
-        // 이 부분은 단순히 isFacingRight에 따라 위치를 결정합니다.
-        if (isFacingRight)
-        {
-            spawnPosition.x += 1.5f;
-        }
-        else
-        {
-            spawnPosition.x -= 1.5f;
-        }
+        // 몬스터가 바라보는 방향에 따라 생성 위치를 조정합니다.
+        spawnPosition.x += isFacingRight ? 1.5f : -1.5f;
 
-        // 프리팹을 생성합니다.
         GameObject slashInstance = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
         SlashBehaviour slashBehaviour = slashInstance.AddComponent<SlashBehaviour>();
-        slashBehaviour.damage = 20;
-        // 몬스터의 자식 객체가 되지 않도록 합니다.
-        slashInstance.transform.parent = null;
+        slashBehaviour.damage = attackDamage;
         StartCoroutine(EnableSlashColliderAfterDelay(slashBehaviour, 0.3f));
+        // claw가 몬스터의 자식 객체가 되지 않도록 합니다 (몬스터가 움직일 때 같이 움직이지 않도록)
+        slashInstance.transform.parent = null;
 
-        Destroy(slashInstance, 0.3f);
+        Destroy(slashInstance, 0.3f); // 짧은 시간 후에 slash를 파괴합니다.
     }
     IEnumerator EnableSlashColliderAfterDelay(SlashBehaviour Slash, float delay)
     {
         yield return new WaitForSeconds(delay);
-        if (Slash != null) 
+        if (Slash != null)
         {
             Slash.EnableCollider();
         }
@@ -352,7 +358,7 @@ public class Mob2 : MonoBehaviour
         private void Awake()
         {
             slashCollider = GetComponent<Collider2D>();
-            DisableCollider();
+            // DisableCollider(); // 이 호출을 주석 처리하여 충돌체가 비활성화되지 않도록 함.
         }
 
         public void EnableCollider()
@@ -363,11 +369,7 @@ public class Mob2 : MonoBehaviour
             slashCollider.enabled = true;
         }
 
-        public void DisableCollider()
-        {
-            isColliderEnabled = false;
-            slashCollider.enabled = false;
-        }
+        // DisableCollider 메소드를 제거함.
 
         void OnTriggerEnter2D(Collider2D collision)
         {
@@ -380,4 +382,5 @@ public class Mob2 : MonoBehaviour
             }
         }
     }
+
 }

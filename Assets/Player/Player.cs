@@ -228,7 +228,7 @@ private void InitializeComponents()
 
         else if (collision.CompareTag("Slash_right") || collision.CompareTag("Slash_left"))
         {
-            // Claw에 닿았을 때 (체력 감소와 넉백 발생)
+            // Slash에 닿았을 때 (체력 감소와 넉백 발생)
             TakeDamage(20f, collision.transform);
         }
 

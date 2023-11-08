@@ -73,11 +73,20 @@ public class Mob3: MonoBehaviour
 
     IEnumerator Knockback(Transform attacker)
     {
+        // 회전을 고정하고 넉백 시작
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
         Vector2 knockbackDirection = (transform.position - attacker.position).normalized;
         rb.velocity = knockbackDirection * knockbackStrength;
+
+        // 넉백 동안 몬스터가 이동할 수 있도록 X와 Y 위치 고정을 해제합니다.
         yield return new WaitForSeconds(knockbackDuration);
+
+        // 넉백이 끝나면 모든 움직임을 중지하고 원래대로 위치 고정을 적용합니다.
         rb.velocity = Vector2.zero;
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
     }
+
     IEnumerator PopHeadKill()
     {
         isPopHeadKillActive = true;
@@ -330,10 +339,7 @@ public class Mob3: MonoBehaviour
     IEnumerator EnableSlashColliderAfterDelay(SlashBehaviour Slash, float delay)
     {
         yield return new WaitForSeconds(delay);
-        if (Slash != null)
-        {
-            Slash.EnableCollider();
-        }
+        
     }
 
 
@@ -355,16 +361,10 @@ public class Mob3: MonoBehaviour
         private void Awake()
         {
             slashCollider = GetComponent<Collider2D>();
-            DisableCollider();
+           // DisableCollider();
         }
 
-        public void EnableCollider()
-        {
-            if (this == null || gameObject == null) return; // 이 객체가 삭제된 경우 함수를 바로 종료합니다.
-
-            isColliderEnabled = true;
-            slashCollider.enabled = true;
-        }
+        
 
         public void DisableCollider()
         {

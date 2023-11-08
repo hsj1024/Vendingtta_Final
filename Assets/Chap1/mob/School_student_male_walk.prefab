@@ -136,7 +136,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 20
+  m_Mass: 100
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -167,6 +167,7 @@ MonoBehaviour:
   knockbackDuration: 0.5
   mobClawRightPrefab: {fileID: 1328085869231275101, guid: ab348d473d65d8849b1b41a76f1a7faf, type: 3}
   mobClawLeftPrefab: {fileID: 3231394174375714383, guid: f759211ebb470be45ac4eb2fb140a59b, type: 3}
+  clawSpawnDelay: 0.4
   coinPrefab: {fileID: 2091339850072999673, guid: 2cf1cc38a824dcc4185e3593895c495f, type: 3}
   coinDropAnimation: {fileID: 7400000, guid: 17154492d7ece7a4e8994a097599d6f7, type: 2}
   coinAnimationSpeed: 1
