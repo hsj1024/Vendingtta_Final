@@ -2110,8 +2110,8 @@ MonoBehaviour:
   mainCamera: {fileID: 519420031}
   monstersPerWave: 5
   waveInterval: 180
-  minY: -4.5
-  maxY: -1.5
+  minY: -4
+  maxY: -1
 --- !u!4 &999540540
 Transform:
   m_ObjectHideFlags: 0
@@ -4044,7 +4044,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 497325341
   m_SortingLayer: 4
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -499477173, guid: 781a7d5a05fda3342a824c8993cad760, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

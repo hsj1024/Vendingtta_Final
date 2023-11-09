@@ -76,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 497325341
   m_SortingLayer: 4
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 1705479876, guid: f40ef917a6d69e54594a1ba3a1373d60, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -128,7 +128,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 7
 --- !u!114 &4967864531087389828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,16 +146,14 @@ MonoBehaviour:
   player: {fileID: 0}
   health: 5
   attackDamage: 20
-  attackCooldown: 1.5
-  knockbackStrength: 10
-  knockbackDuration: 0.5
+  attackCooldown: 2
   mobSlashLeftPrefab: {fileID: 6875899323426183739, guid: a7a32595d25cf964792884741a740bc5, type: 3}
   mobSlashRightPrefab: {fileID: 6908745203409532252, guid: a5e597e01fbefe74aa952d72003f5bfd, type: 3}
   deathAnimationDuration: 0.1
   coinPrefab: {fileID: 2091339850072999673, guid: 2cf1cc38a824dcc4185e3593895c495f, type: 3}
   coinDropAnimation: {fileID: 7400000, guid: 17154492d7ece7a4e8994a097599d6f7, type: 2}
   coinAnimationSpeed: 1
-  slashSpawnDelay: 0.65
+  slashSpawnDelay: 0.6
 --- !u!70 &458229729410527763
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -169,6 +167,6 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.000000059604645, y: 0.12050724}
-  m_Size: {x: 0.5690683, y: 1.9989858}
+  m_Offset: {x: 0.000000059604645, y: 0.02362895}
+  m_Size: {x: 0.5690683, y: 1.8052292}
   m_Direction: 0

@@ -76,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 497325341
   m_SortingLayer: 4
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 1848693283, guid: 40492766fa06a4348ab4d201d3942195, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -126,8 +126,6 @@ MonoBehaviour:
   health: 9
   attackDamage: 0
   attackCooldown: 1.5
-  knockbackStrength: 100
-  knockbackDuration: 1
   mobSlashLeftPrefab: {fileID: 6875899323426183739, guid: e0261a0543966b2478344fc282dd72ba, type: 3}
   mobSlashRightPrefab: {fileID: 6908745203409532252, guid: 7e5f4d38e9584184bb42d987e8ea0d98, type: 3}
   deathAnimationDuration: 2
@@ -142,7 +140,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5855581489807316105}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -154,7 +152,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 7
 --- !u!70 &1827159799696198923
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -168,6 +166,6 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.018389702, y: 0.09720349}
-  m_Size: {x: 0.630847, y: 2.325593}
+  m_Offset: {x: -0.039406776, y: 0.09720349}
+  m_Size: {x: 0.5888128, y: 2.131186}
   m_Direction: 0

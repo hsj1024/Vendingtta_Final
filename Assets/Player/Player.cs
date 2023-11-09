@@ -214,11 +214,11 @@ private void InitializeComponents()
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //Debug.Log("Collided with: " + collision.gameObject.name + ", Tag: " + collision.gameObject.tag);
-        if (collision.CompareTag("Monster"))
+        if (collision.gameObject.CompareTag("Monster"))
         {
-            // 몬스터 본체에 닿았을 때 (체력 감소 없이 넉백만 발생)
-            StartCoroutine(Knockback(collision.transform));
+            Vector2 knockbackDirection = (transform.position - collision.transform.position).normalized;
+            GetComponent<Rigidbody2D>().AddForce(knockbackDirection * knockbackStrength, ForceMode2D.Impulse);
+            // 플레이어에게 데미지를 주지 않고 넉백만 적용합니다.
         }
         else if (collision.CompareTag("Claw_right") || collision.CompareTag("Claw_left"))
         {

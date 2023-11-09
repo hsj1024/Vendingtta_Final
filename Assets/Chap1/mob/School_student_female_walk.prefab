@@ -76,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 497325341
   m_SortingLayer: 4
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: -61744339, guid: eba89528fd2f9ed43846a5bfce7d26f4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -121,8 +121,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.635, y: 0}
-  m_Size: {x: 1.27, y: 2.53}
+  m_Offset: {x: -0.031619072, y: -0.12490487}
+  m_Size: {x: 0.73552394, y: 2.2801905}
   m_Direction: 0
 --- !u!50 &4807546628287988213
 Rigidbody2D:
@@ -144,7 +144,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 7
 --- !u!114 &1252598236713773532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,12 +162,11 @@ MonoBehaviour:
   player: {fileID: 0}
   health: 5
   attackDamage: 20
-  attackCooldown: 1.5
-  knockbackStrength: 10
-  knockbackDuration: 0.5
+  attackCooldown: 2
+  nextAttackTime: 0
   mobClawRightPrefab: {fileID: 1328085869231275101, guid: ab348d473d65d8849b1b41a76f1a7faf, type: 3}
   mobClawLeftPrefab: {fileID: 3231394174375714383, guid: f759211ebb470be45ac4eb2fb140a59b, type: 3}
-  clawSpawnDelay: 0.4
+  clawSpawnDelay: 0.3
   coinPrefab: {fileID: 2091339850072999673, guid: 2cf1cc38a824dcc4185e3593895c495f, type: 3}
   coinDropAnimation: {fileID: 7400000, guid: 17154492d7ece7a4e8994a097599d6f7, type: 2}
   coinAnimationSpeed: 1

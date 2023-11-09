@@ -126,8 +126,6 @@ MonoBehaviour:
   health: 9
   attackDamage: 0
   attackCooldown: 1.5
-  knockbackStrength: 100
-  knockbackDuration: 1
   mobSlashLeftPrefab: {fileID: 6875899323426183739, guid: e0261a0543966b2478344fc282dd72ba, type: 3}
   mobSlashRightPrefab: {fileID: 6908745203409532252, guid: 7e5f4d38e9584184bb42d987e8ea0d98, type: 3}
   deathAnimationDuration: 2
@@ -147,8 +145,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0421018, y: 0.039762855}
-  m_Size: {x: 0.5702692, y: 1.9827106}
+  m_Offset: {x: -0.0421018, y: 0.06015873}
+  m_Size: {x: 0.5702692, y: 1.9419188}
   m_Direction: 0
 --- !u!50 &-4795587081158908917
 Rigidbody2D:
@@ -158,7 +156,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 833039919099588952}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -170,4 +168,4 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 7
