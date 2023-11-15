@@ -40,7 +40,7 @@ public class BossController : MonoBehaviour
         if (currentBossHealth > 0)
         {
             currentBossHealth -= damage; // float 값을 전달
-            currentBossHealth -= Mathf.Max(currentBossHealth, 0); // 체력이 음수가 되지 않도록 함
+            //currentBossHealth -= Mathf.Max(currentBossHealth, 0); // 체력이 음수가 되지 않도록 함
 
             // 체력이 0 이하인 경우 처리
             if (currentBossHealth == 0)
@@ -56,17 +56,6 @@ public class BossController : MonoBehaviour
         }
     }
 
-
-    // 보스의 체력을 회복시키는 함수
-    /*public void RecoverHealth(int recover)
-    {
-        bossHealth += recover;
-        if (bossHealth > maxBossHealth)
-        {
-            bossHealth = maxBossHealth;
-        }
-        UpdateBossHealthUI();
-    }*/
 
     // 보스의 체력을 표시하는 함수
     private void UpdateBossHealthUI()

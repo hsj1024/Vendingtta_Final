@@ -98,10 +98,10 @@ public class Coffee : MonoBehaviour
             spriteRenderer.sprite = coffeeCrashSprite;
             rb.gravityScale = 1;
             // 보스에게 데미지 입히기
-            BossController boss = collision.collider.GetComponent<BossController>();
-            if (boss != null)
+            BossController bossController = BossController.Instance;
+            if (bossController != null)
             {
-                boss.TakeDamage(attackDamage);
+                bossController.TakeDamage(attackDamage);
             }
 
             StartCoroutine(DelayAndDestroy());
