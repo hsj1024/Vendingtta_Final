@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2050874936697687073}
   - component: {fileID: -9161920025002832281}
   - component: {fileID: -7006354732450133688}
-  - component: {fileID: -3875258418324812073}
+  - component: {fileID: 5071522141554331879}
   m_Layer: 10
   m_Name: School_F2_Walk
   m_TagString: Monster
@@ -120,15 +120,15 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 100
+  m_Mass: 10
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 7
+  m_Constraints: 4
 --- !u!114 &-7006354732450133688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -147,15 +147,17 @@ MonoBehaviour:
   health: 5
   attackDamage: 20
   attackCooldown: 2
+  knockbackStrength: 10
+  knockbackDuration: 1
   mobSlashLeftPrefab: {fileID: 6875899323426183739, guid: a7a32595d25cf964792884741a740bc5, type: 3}
   mobSlashRightPrefab: {fileID: 6908745203409532252, guid: a5e597e01fbefe74aa952d72003f5bfd, type: 3}
   deathAnimationDuration: 0.1
   coinPrefab: {fileID: 2091339850072999673, guid: 2cf1cc38a824dcc4185e3593895c495f, type: 3}
   coinDropAnimation: {fileID: 7400000, guid: 17154492d7ece7a4e8994a097599d6f7, type: 2}
   coinAnimationSpeed: 1
-  slashSpawnDelay: 0.6
---- !u!70 &-3875258418324812073
-CapsuleCollider2D:
+  slashSpawnDelay: 0.62
+--- !u!60 &5071522141554331879
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -167,6 +169,58 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.034152746, y: -0.03677976}
-  m_Size: {x: 0.6518636, y: 2.057626}
-  m_Direction: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.13, y: 2.52}
+    newSize: {x: 1.13, y: 2.52}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.505, y: -0.71999997}
+      - {x: 0.375, y: -0.65999997}
+      - {x: 0.42499998, y: -0.45}
+      - {x: 0.39499998, y: -0.44}
+      - {x: 0.375, y: -0.14999999}
+      - {x: 0.325, y: 0.16}
+      - {x: 0.285, y: 0.24}
+      - {x: 0.225, y: 0.26999998}
+      - {x: 0.275, y: 0.39}
+      - {x: 0.375, y: 0.48999998}
+      - {x: 0.42499998, y: 0.7}
+      - {x: 0.415, y: 0.85999995}
+      - {x: 0.45499998, y: 0.96}
+      - {x: 0.42499998, y: 0.96999997}
+      - {x: 0.295, y: 1.11}
+      - {x: 0.155, y: 1.24}
+      - {x: 0.095, y: 1.26}
+      - {x: -0.255, y: 1.26}
+      - {x: -0.295, y: 1.25}
+      - {x: -0.465, y: 1.12}
+      - {x: -0.525, y: 0.98999995}
+      - {x: -0.565, y: 0.81}
+      - {x: -0.565, y: 0.65}
+      - {x: -0.49499997, y: 0.64}
+      - {x: -0.45499998, y: 0.48}
+      - {x: -0.415, y: 0.38}
+      - {x: -0.21499999, y: 0.24}
+      - {x: -0.355, y: 0.22}
+      - {x: -0.435, y: 0.11}
+      - {x: -0.435, y: -0.14999999}
+      - {x: -0.49499997, y: -0.59999996}
+      - {x: -0.49499997, y: -0.72999996}
+      - {x: -0.45499998, y: -0.75}
+      - {x: -0.515, y: -0.93}
+      - {x: -0.565, y: -1.03}
+      - {x: -0.565, y: -1.09}
+      - {x: -0.445, y: -1.17}
+      - {x: -0.305, y: -1.1999999}
+      - {x: 0.155, y: -1.26}
+      - {x: 0.465, y: -1.26}
+      - {x: 0.515, y: -1.12}
+      - {x: 0.565, y: -0.95}
+      - {x: 0.565, y: -0.78}

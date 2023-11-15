@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 2410482042901221185}
   - component: {fileID: 4887284814332495432}
   - component: {fileID: 3835546580260992874}
-  - component: {fileID: 1779403786358386928}
   - component: {fileID: 4807546628287988213}
   - component: {fileID: 1252598236713773532}
+  - component: {fileID: 7120904769525334094}
   m_Layer: 10
   m_Name: School_student_female_walk
   m_TagString: Monster
@@ -108,22 +108,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!70 &1779403786358386928
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3885725914527338751}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.031619072, y: -0.12490487}
-  m_Size: {x: 0.73552394, y: 2.2801905}
-  m_Direction: 0
 --- !u!50 &4807546628287988213
 Rigidbody2D:
   serializedVersion: 4
@@ -144,7 +128,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 7
+  m_Constraints: 4
 --- !u!114 &1252598236713773532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,7 +147,8 @@ MonoBehaviour:
   health: 5
   attackDamage: 20
   attackCooldown: 2
-  nextAttackTime: 0
+  knockbackStrength: 100
+  knockbackDuration: 1
   mobClawRightPrefab: {fileID: 1328085869231275101, guid: ab348d473d65d8849b1b41a76f1a7faf, type: 3}
   mobClawLeftPrefab: {fileID: 3231394174375714383, guid: f759211ebb470be45ac4eb2fb140a59b, type: 3}
   clawSpawnDelay: 0.3
@@ -171,3 +156,56 @@ MonoBehaviour:
   coinDropAnimation: {fileID: 7400000, guid: 17154492d7ece7a4e8994a097599d6f7, type: 2}
   coinAnimationSpeed: 1
   deathAnimationDuration: 0.1
+  imageOffset: {x: 0, y: 2, z: 0}
+  Keyboard_Sapce: {fileID: 21300000, guid: 733d162ad58ad53489d533785af68a50, type: 3}
+  Keyboard_Sapce_Press: {fileID: 21300000, guid: 23b92610b95c03447bb691e6e6e48da3, type: 3}
+--- !u!60 &7120904769525334094
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3885725914527338751}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.27, y: 2.53}
+    newSize: {x: 1.26, y: 2.51}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.475, y: -0.66499996}
+      - {x: 0.475, y: 0.525}
+      - {x: 0.48499998, y: 0.905}
+      - {x: 0.465, y: 1.015}
+      - {x: 0.24499999, y: 1.2049999}
+      - {x: 0.125, y: 1.265}
+      - {x: -0.21499999, y: 1.265}
+      - {x: -0.255, y: 1.245}
+      - {x: -0.42499998, y: 1.115}
+      - {x: -0.475, y: 0.97499996}
+      - {x: -0.625, y: 0.78499997}
+      - {x: -0.585, y: 0.675}
+      - {x: -0.525, y: 0.66499996}
+      - {x: -0.515, y: -0.015}
+      - {x: -0.49499997, y: -0.645}
+      - {x: -0.555, y: -0.815}
+      - {x: -0.635, y: -0.945}
+      - {x: -0.635, y: -1.0649999}
+      - {x: -0.525, y: -1.1949999}
+      - {x: -0.375, y: -1.265}
+      - {x: 0.315, y: -1.265}
+      - {x: 0.435, y: -1.255}
+      - {x: 0.615, y: -1.095}
+      - {x: 0.635, y: -1.025}
+      - {x: 0.635, y: -0.875}

@@ -7,15 +7,15 @@ public class Mob2 : MonoBehaviour
 {
     [Header("Mob Parameters")]
     public float moveSpeed;
-    public float distanceToAttack = 3f;
+    public float distanceToAttack = 4f;
     public Transform player;
     public float health = 5f;
     public float attackDamage = 0f;
     public float attackCooldown = 1f;
 
-    //[Header("Knockback Settings")]
-    //[SerializeField] private float knockbackStrength = 100f;
-    //[SerializeField] private float knockbackDuration = 1f;
+    [Header("Knockback Settings")]
+    [SerializeField] private float knockbackStrength = 100f;
+    [SerializeField] private float knockbackDuration = 1f;
 
     private float nextAttackTime;
     private Animator animator;
@@ -67,48 +67,71 @@ public class Mob2 : MonoBehaviour
             }
         }
 
-        // 넉백 로직은 데미지 적용 여부와 상관없이 실행
-        // 추가: 공격자가 플레이어일 경우에만 넉백을 적용합니다.
-       // if (rb != null && attacker.CompareTag("Coffee"))
-        //{
-       //     StartCoroutine(Knockback(attacker));
-       // }
+        if (rb != null && attacker.CompareTag("Player")) // 'Player' 태그를 가진 공격자에게만 넉백 적용
+        {
+            StartCoroutine(Knockback(attacker));
+        }
     }
 
-   // IEnumerator Knockback(Transform attacker)
-   // {
-        // 회전을 고정하고 넉백 시작
-      //  rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+    IEnumerator Knockback(Transform attacker)
+    {
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
 
-       // Vector2 knockbackDirection = (transform.position - attacker.position).normalized;
-       // rb.velocity = knockbackDirection * knockbackStrength;
+        Vector2 knockbackDirection = (transform.position - attacker.position).normalized;
+        rb.velocity = knockbackDirection * knockbackStrength;
 
-        // 넉백 동안 몬스터가 이동할 수 있도록 X와 Y 위치 고정을 해제합니다.
-        //yield return new WaitForSeconds(knockbackDuration);
+        yield return new WaitForSeconds(knockbackDuration);
 
-        // 넉백이 끝나면 모든 움직임을 중지하고 원래대로 위치 고정을 적용합니다.
-       // rb.velocity = Vector2.zero;
-       // rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
-    //}
+        rb.velocity = Vector2.zero;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+    }
 
 
     IEnumerator PopHeadKill()
     {
         isPopHeadKillActive = true;
-        // 다른 몬스터들이 멈추도록 합니다.
-        Mob2.isGlobalStop = true;
+        isGlobalStop = true; // 전체 정지 상태를 활성화합니다.
+        FreezeAllMobs(true); // 모든 몬스터의 위치를 고정합니다.
+
+        MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
+        if (cameraScript != null)
+        {
+            cameraScript.StartCloseUp(transform);
+        }
+
 
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
-        // 플레이어가 공격하기 전까지 반복
         while (isPopHeadKillActive)
         {
             renderer.color = Color.red;
-            yield return new WaitForSeconds(1f);
-            renderer.color = Color.white;
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
+            renderer.color = Color.red;
+            yield return new WaitForSeconds(0.5f);
         }
+
+        if (cameraScript != null)
+        {
+            cameraScript.EndCloseUp(player); // 여기서 player는 이미 Start에서 설정된 플레이어의 Transform
+        }
+
+
+        FreezeAllMobs(false); // 모든 몬스터의 위치 고정을 해제합니다.
+        isGlobalStop = false; // 전체 정지 상태를 비활성화합니다.
     }
 
+    void FreezeAllMobs(bool shouldFreeze)
+    {
+        // 모든 몬스터에 대한 참조를 얻는 방법에 따라 이 부분을 채웁니다.
+        // 예를 들어, 모든 몬스터가 'Mob' 태그를 가지고 있다면 아래와 같이 할 수 있습니다:
+        foreach (var mob in GameObject.FindGameObjectsWithTag("Monster"))
+        {
+            var rb = mob.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.constraints = shouldFreeze ? RigidbodyConstraints2D.FreezeAll : RigidbodyConstraints2D.FreezeRotation;
+            }
+        }
+    }
 
     public void Die()
     {
@@ -229,12 +252,12 @@ public class Mob2 : MonoBehaviour
         }
 
         // Rigidbody의 설정을 조정합니다.
-        rb.bodyType = RigidbodyType2D.Kinematic; // 몬스터가 물리 힘에 의해 움직이지 않도록 합니다.
+        rb.bodyType = RigidbodyType2D.Dynamic; // 몬스터가 물리 힘에 의해 움직이지 않도록 합니다.
         rb.gravityScale = 0; // 중력의 영향을 받지 않도록 합니다.
         rb.mass = 10f; // 물리적 충돌에 의한 밀림을 방지하기 위해 질량을 높입니다.
 
         // 위치 및 회전 고정을 설정합니다.
-        rb.constraints = RigidbodyConstraints2D.FreezeAll; // 모든 축에 대한 움직임과 회전을 고정합니다.
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
 
         animator = GetComponent<Animator>();
         if (animator == null) // Animator 컴포넌트가 없으면 로그를 출력하고 메서드를 종료합니다.
@@ -256,12 +279,16 @@ public class Mob2 : MonoBehaviour
 
     void Update()
     {
+        // 전체 정지 상태 또는 PopHeadKill 상태일 경우, 아래의 모든 행동을 중지합니다.
+        if (Mob.isGlobalStop) // Mob 클래스에 정의된 isGlobalStop을 참조
+        {
+            // 이곳에서 추가적인 정지 조건이 필요한 경우 구현
+            return;
+        }
+
         // 플레이어가 없으면 아무것도 하지 않음
         if (player == null) return;
 
-        // 팝헤드킬 상태가 아니면서 전체 정지 상태일 때 움직임과 공격을 멈춤
-        if (!isPopHeadKillActive && Mob2.isGlobalStop) return;
-        
         LookAtPlayer();
         MoveControl();
         AttackControl();
@@ -291,47 +318,25 @@ public class Mob2 : MonoBehaviour
 
     void MoveControl()
     {
-
-        //Debug.Log("MoveControl method called.");
+        if (player == null) return;
 
         Vector3 direction = (player.position - transform.position).normalized;
         float distanceY = moveSpeed * Time.deltaTime;
         float distanceX = Mathf.Abs(player.position.x - transform.position.x);
 
-        if (distanceX > 1.5f)
-        {
-            if (player.position.x > transform.position.x && !isFacingRight)
-            {
-                transform.rotation = Quaternion.Euler(0, 180, 0);
-                isFacingRight = true;
-            }
-            else if (player.position.x < transform.position.x && isFacingRight)
-            {
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-                isFacingRight = false;
-            }
-        }
-        if (Vector3.Distance(transform.position, player.position) >= distanceToAttack)
-        {
-            Vector2 newPos = rb.position + (Vector2)direction * distanceY;
-            rb.MovePosition(newPos);
-            animator.SetBool("IsWalkingSchool", true);
-        }
-        else
-        {
-            animator.SetBool("IsWalkingSchool", false);
+        // 플레이어의 위치를 향해 항상 이동하도록 변경
+        Vector2 newPos = rb.position + (Vector2)direction * distanceY;
+        rb.MovePosition(newPos);
+        animator.SetBool("IsWalkingSchool", true);
 
-        }
-
+        // 몬스터가 플레이어를 바라보도록 하는 로직
         if (player.position.x > transform.position.x && !isFacingRight)
         {
-            //Debug.Log("Setting isFacingRight to true");
             transform.rotation = Quaternion.Euler(0, 180, 0);
             isFacingRight = true;
         }
         else if (player.position.x < transform.position.x && isFacingRight)
         {
-            //Debug.Log("Setting isFacingRight to false");
             transform.rotation = Quaternion.Euler(0, 0, 0);
             isFacingRight = false;
         }
@@ -371,7 +376,7 @@ public class Mob2 : MonoBehaviour
         Vector3 spawnPosition = transform.position;
 
         // 몬스터가 바라보는 방향에 따라 생성 위치를 조정합니다.
-        spawnPosition.x += isFacingRight ? 1.5f : -1.5f;
+        spawnPosition.x += isFacingRight ? 1.0f : -1.0f;
 
         GameObject slashInstance = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
         SlashBehaviour slashBehaviour = slashInstance.GetComponent<SlashBehaviour>();

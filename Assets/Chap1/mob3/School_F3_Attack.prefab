@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7888099874171543990}
   - component: {fileID: 1315943426962934538}
   - component: {fileID: -5603177400037676419}
-  - component: {fileID: -2577047835842717136}
+  - component: {fileID: -6230931289913924527}
   m_Layer: 10
   m_Name: School_F3_Attack
   m_TagString: Monster
@@ -126,6 +126,8 @@ MonoBehaviour:
   health: 9
   attackDamage: 0
   attackCooldown: 1.5
+  knockbackStrength: 100
+  knockbackDuration: 1
   mobSlashLeftPrefab: {fileID: 6875899323426183739, guid: e0261a0543966b2478344fc282dd72ba, type: 3}
   mobSlashRightPrefab: {fileID: 6908745203409532252, guid: 7e5f4d38e9584184bb42d987e8ea0d98, type: 3}
   deathAnimationDuration: 2
@@ -140,21 +142,21 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7888099874171543991}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 20
+  m_Mass: 10
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 7
---- !u!70 &-2577047835842717136
-CapsuleCollider2D:
+  m_Constraints: 4
+--- !u!60 &-6230931289913924527
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -166,6 +168,56 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.052620173, y: 0.1341815}
-  m_Size: {x: 0.60327387, y: 2.131186}
-  m_Direction: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.14, y: 2.52}
+    newSize: {x: 1.14, y: 2.52}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.39, y: -0.65}
+      - {x: 0.42999998, y: -0.45}
+      - {x: 0.39999998, y: -0.44}
+      - {x: 0.38, y: -0.14999999}
+      - {x: 0.42999998, y: -0.04}
+      - {x: 0.39999998, y: 0.14999999}
+      - {x: 0.35999998, y: 0.17}
+      - {x: 0.26999998, y: 0.26}
+      - {x: 0.22, y: 0.26999998}
+      - {x: 0.28, y: 0.39}
+      - {x: 0.38, y: 0.48999998}
+      - {x: 0.42999998, y: 0.7}
+      - {x: 0.41, y: 0.85999995}
+      - {x: 0.45, y: 0.95}
+      - {x: 0.42, y: 0.96999997}
+      - {x: 0.29999998, y: 1.11}
+      - {x: 0.16, y: 1.24}
+      - {x: 0.099999994, y: 1.26}
+      - {x: -0.26, y: 1.26}
+      - {x: -0.29999998, y: 1.25}
+      - {x: -0.47, y: 1.12}
+      - {x: -0.53, y: 0.98999995}
+      - {x: -0.57, y: 0.81}
+      - {x: -0.57, y: 0.65}
+      - {x: -0.51, y: 0.63}
+      - {x: -0.42999998, y: 0.37}
+      - {x: -0.25, y: 0.26999998}
+      - {x: -0.31, y: 0.22999999}
+      - {x: -0.39, y: 0.16}
+      - {x: -0.41, y: 0.099999994}
+      - {x: -0.45, y: -0.35}
+      - {x: -0.48, y: -0.59999996}
+      - {x: -0.51, y: -0.66999996}
+      - {x: -0.47, y: -0.85999995}
+      - {x: -0.5, y: -1.13}
+      - {x: -0.31, y: -1.2099999}
+      - {x: 0.17999999, y: -1.1999999}
+      - {x: 0.31, y: -1.26}
+      - {x: 0.47, y: -1.26}
+      - {x: 0.57, y: -1}
+      - {x: 0.57, y: -0.76}

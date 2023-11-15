@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 7268268235588524069}
   - component: {fileID: -8723458155629770899}
   - component: {fileID: -8553192902985025593}
-  - component: {fileID: 8379525501342859608}
   - component: {fileID: 8922439760984195914}
+  - component: {fileID: 8691223472762211618}
   m_Layer: 10
   m_Name: School_student_female_idle
   m_TagString: Monster
@@ -106,7 +106,8 @@ MonoBehaviour:
   health: 5
   attackDamage: 20
   attackCooldown: 2
-  nextAttackTime: 0
+  knockbackStrength: 100
+  knockbackDuration: 1
   mobClawRightPrefab: {fileID: 1328085869231275101, guid: ab348d473d65d8849b1b41a76f1a7faf, type: 3}
   mobClawLeftPrefab: {fileID: 3231394174375714383, guid: f759211ebb470be45ac4eb2fb140a59b, type: 3}
   clawSpawnDelay: 0.3
@@ -114,6 +115,9 @@ MonoBehaviour:
   coinDropAnimation: {fileID: 7400000, guid: 17154492d7ece7a4e8994a097599d6f7, type: 2}
   coinAnimationSpeed: 1
   deathAnimationDuration: 0.1
+  imageOffset: {x: 0, y: 2, z: 0}
+  Keyboard_Sapce: {fileID: 21300000, guid: 733d162ad58ad53489d533785af68a50, type: 3}
+  Keyboard_Sapce_Press: {fileID: 21300000, guid: 23b92610b95c03447bb691e6e6e48da3, type: 3}
 --- !u!95 &-8553192902985025593
 Animator:
   serializedVersion: 5
@@ -134,22 +138,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!70 &8379525501342859608
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3324791582701073720}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.03205639, y: -0.058769822}
-  m_Size: {x: 0.7684692, y: 2.1039526}
-  m_Direction: 0
 --- !u!50 &8922439760984195914
 Rigidbody2D:
   serializedVersion: 4
@@ -170,4 +158,52 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 7
+  m_Constraints: 4
+--- !u!60 &8691223472762211618
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3324791582701073720}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.26, y: 2.51}
+    newSize: {x: 1.26, y: 2.51}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.48, y: -0.66499996}
+      - {x: 0.48, y: 0.525}
+      - {x: 0.48999998, y: 0.905}
+      - {x: 0.47, y: 1.015}
+      - {x: 0.22, y: 1.255}
+      - {x: -0.24, y: 1.255}
+      - {x: -0.44, y: 1.125}
+      - {x: -0.52, y: 0.825}
+      - {x: -0.62, y: 0.78499997}
+      - {x: -0.58, y: 0.675}
+      - {x: -0.52, y: 0.66499996}
+      - {x: -0.51, y: -0.015}
+      - {x: -0.48999998, y: -0.645}
+      - {x: -0.53999996, y: -0.825}
+      - {x: -0.63, y: -0.905}
+      - {x: -0.63, y: -1.055}
+      - {x: -0.58, y: -1.145}
+      - {x: -0.45, y: -1.225}
+      - {x: -0.35, y: -1.255}
+      - {x: 0.44, y: -1.255}
+      - {x: 0.62, y: -1.095}
+      - {x: 0.63, y: -1.055}
+      - {x: 0.63, y: -0.875}
