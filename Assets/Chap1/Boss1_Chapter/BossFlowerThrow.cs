@@ -14,14 +14,30 @@ public class BossFlowerThrow : MonoBehaviour
 
     public delegate void SkillCompleted();
     public event SkillCompleted OnSkillCompleted;
+    private BossController bossController;
+    public enum BossSkillType
+    {
+        GhostAttack,
+        BossFlowerThrow,
+        FakeAttackSkill
+    }
+
+    public void ActivateEnhancedSkill()
+    {
+        // 강화된 스킬을 활성화하는 로직
+        // 예: 더 많은 꽃을 생성하고 던지는 로직
+        skillEnhanced = true;
+        ThrowEnhancedFlowers();
+    }
 
     private void Start()
     {
+        // BossController 싱글톤 인스턴스를 참조
+        //bossController = BossController.Instance;
         // 게임 시작 시 기본 꽃 던지기 실행
         ThrowFlowers();
 
-        // 10초 후 스킬 강화
-        StartCoroutine(EnhanceSkillAfterDelay(10f));
+        
     }
 
     private void Update()
@@ -55,7 +71,7 @@ public class BossFlowerThrow : MonoBehaviour
         }
 
         // 모든 꽃을 던진 후에 isThrowingFlowers 상태를 업데이트합니다.
-        yield return new WaitForSeconds(1f); // 이 시간은 꽃을 모두 던지는 데 걸리는 시간을 기반으로 설정해야 합니다.
+        yield return new WaitForSeconds(3f); // 이 시간은 꽃을 모두 던지는 데 걸리는 시간을 기반으로 설정해야 합니다.
         isThrowingFlowers = false;
 
         // 스킬이 강화된 상태라면 강화된 꽃 던지기 실행
@@ -152,4 +168,36 @@ public class BossFlowerThrow : MonoBehaviour
             OnSkillCompleted?.Invoke();
             skillEnhanced = false; // 스킬 비활성화
         }
+
+        public void ActivateRandomSkill()
+        {
+            if (bossController != null && bossController.currentBossHealth <= 50)
+            {
+                // 체력이 50 이하일 때 강화된 스킬 실행
+                ThrowEnhancedFlowers();
+            }
+            else
+            {
+                // 체력이 50 이상일 때 일반 스킬 실행
+                ThrowFlowers();
+            }
+        }
+
+
+
+    /*public void ActivateRandomSkill()
+    {
+        if (skillEnhanced || bossController.CurrentHealth <= 50)
+        {
+            // 체력이 50 이하거나 스킬이 이미 강화된 경우 강화된 스킬 실행
+            ThrowEnhancedFlowers();
+        }
+        else
+        {
+            // 체력이 50 이상일 때 일반 스킬 실행
+            ThrowFlowers();
+        }
+    }*/
+
+
 }

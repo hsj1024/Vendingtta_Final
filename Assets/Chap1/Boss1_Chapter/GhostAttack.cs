@@ -38,44 +38,84 @@ public class GhostAttack : MonoBehaviour
     public event SkillCompleted OnSkillCompleted;
     public delegate void AttackCompletedHandler();
     public event AttackCompletedHandler AttackCompleted;
+
+    private BossController bossController;
+
+    public enum BossSkillType
+    {
+        GhostAttack,
+        BossFlowerThrow,
+        FakeAttackSkill
+    }
+    public void ActivateEnhancedSkill()
+    {
+        // 강화된 스킬을 활성화하는 로직 구현
+        if (!skillActivatedOnce)
+        {
+            StartCoroutine(EnhancedGhostSpawn());
+            skillActivatedOnce = true;
+        }
+    }
     private void Start()
     {
         mainCamera = Camera.main;
+
+        bossController = BossController.Instance;
+        if (bossController != null)
+        {
+            bossController.OnHealthBelowFifty += ActivateSkill;
+        }
         StartCoroutine(SpawnNorthGhosts());
+
     }
-    
-    private void Update()
+
+    private void OnDestroy()
     {
-        if (!westSpawned && AllGhostsOutOfScreen(northGhosts))
+        if (bossController != null)
         {
-            StartCoroutine(SpawnWestGhosts());
-            westSpawned = true;
+            bossController.OnHealthBelowFifty -= ActivateSkill;
         }
-
-        if (westSpawned && !skillActivated && AllGhostsOutOfScreen(westGhosts) && AllGhostsOutOfScreen(northGhosts) && !skillTimerStarted)
-        {
-            ActivateSkill();
-        }
-
-        if (skillActivated && !northEnhancedSpawned)
-        {
-            SpawnEnhancedGhosts(northSpawnPoint, Vector3.down, northEnhancedGhosts, northEndPosition);
-            northEnhancedSpawned = true;
-        }
-        if (skillActivated && AllGhostsOutOfScreen(eastEnhancedGhosts) && AllGhostsOutOfScreen(northEnhancedGhosts) && AllGhostsOutOfScreen(westGhosts) && AllGhostsOutOfScreen(northGhosts))
-        {
-            skillActivated = false;
-            Debug.Log("Skill completed, spawning next boss...");
-            OnSkillCompletedInternal();
-            
-
-        }
-
-
-
-
-
     }
+
+
+    private void Update()
+{
+    if (!westSpawned && AllGhostsOutOfScreen(northGhosts))
+    {
+        StartCoroutine(SpawnWestGhosts());
+        westSpawned = true;
+    }
+
+    if (westSpawned && !skillActivated && AllGhostsOutOfScreen(westGhosts) && AllGhostsOutOfScreen(northGhosts) && !skillTimerStarted)
+    {
+        ActivateSkill();
+    }
+
+    if (skillActivated && !northEnhancedSpawned)
+    {
+        SpawnEnhancedGhosts(northSpawnPoint, Vector3.down, northEnhancedGhosts, northEndPosition);
+        northEnhancedSpawned = true;
+    }
+
+    if (skillActivated && AllGhostsOutOfScreen(eastEnhancedGhosts) && AllGhostsOutOfScreen(northEnhancedGhosts) && AllGhostsOutOfScreen(westGhosts) && AllGhostsOutOfScreen(northGhosts))
+    {
+        skillActivated = false;
+        Debug.Log("Skill completed, spawning next boss...");
+        OnSkillCompletedInternal();
+    }
+}
+
+    // 스킬 강화시 Active
+private void ActivateSkill()
+{
+    if (!skillActivatedOnce)
+    {
+        skillActivated = true;
+        StartCoroutine(EnhancedGhostSpawn());
+        skillActivatedOnce = true;
+    }
+}
+
 
     private bool AllGhostsOutOfScreen(List<GameObject> ghosts)
     {
@@ -89,29 +129,20 @@ public class GhostAttack : MonoBehaviour
                     Debug.Log("Ghost is on screen: " + ghost.name);
 
                     return false;
-                    
+
                 }
             }
         }
         Debug.Log("All ghosts are out of screen");
 
         return true;
-      
 
-    }
-
-    private void ActivateSkill()
-    {
-        //skillActivated = true;
-        StartCoroutine(EnhancedGhostSpawn());
-        skillTimerStarted = true;
-        
 
     }
 
 
 
-    private IEnumerator SpawnWestGhosts()
+    private IEnumerator SpawnWestGhosts() // 서쪽 
     {
         for (int i = 0; i < numberOfGhostsPerGroup; i++)
         {
@@ -121,7 +152,7 @@ public class GhostAttack : MonoBehaviour
     }
 
 
-    private IEnumerator SpawnNorthGhosts()
+    private IEnumerator SpawnNorthGhosts()  // 북쪽
     {
         yield return SpawnGhosts(northSpawnPoint, Vector3.down, ghost1Prefab, northGhosts, numberOfGhostsPerGroup);
     }
@@ -198,10 +229,10 @@ public class GhostAttack : MonoBehaviour
             ghost.transform.position = Vector3.MoveTowards(ghost.transform.position, originalPosition, ghostAI.moveSpeed * Time.deltaTime);
             yield return null;
         }
-        
+
         ghostAI.SetTarget(player); // 유령이 플레이어를 향하게 설정
         skillActivated = true;
-        
+
 
     }
 
@@ -229,4 +260,20 @@ public class GhostAttack : MonoBehaviour
         OnSkillCompleted?.Invoke();
         //skillActivated = false; // 스킬 비활성화
     }
+
+    public void ActivateRandomSkill()
+    {
+        if (bossController != null && bossController.currentBossHealth <= 50)
+        {
+            // 체력이 50 이하일 때 강화된 스킬 실행
+            StartCoroutine(EnhancedGhostSpawn());
+        }
+        else
+        {
+            // 체력이 50 이상일 때 일반 스킬 실행
+            StartCoroutine(SpawnNorthGhosts());
+            StartCoroutine(SpawnWestGhosts());
+        }
+    }
+
 }

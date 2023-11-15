@@ -69,6 +69,8 @@ public class Coffee : MonoBehaviour
             Mob2 mob2Component = collision.collider.GetComponent<Mob2>();
             Mob3 mob3Component = collision.collider.GetComponent<Mob3>();
 
+           
+
             if (mobComponent != null)
             {
                 mobComponent.TakeDamage(attackDamage, transform);
@@ -82,6 +84,24 @@ public class Coffee : MonoBehaviour
             if (mob3Component != null)
             {
                 mob3Component.TakeDamage(attackDamage, transform);
+            }
+
+            StartCoroutine(DelayAndDestroy());
+        }
+
+        else if (collision.collider.CompareTag("Boss"))
+        {
+            // "Boss"와의 충돌 처리 코드
+            Vector2 bounceDirection = new Vector2(-launchDirection.x, 1).normalized * bounceBackForce;
+            rb.velocity = bounceDirection;
+            hasCollided = true;
+            spriteRenderer.sprite = coffeeCrashSprite;
+            rb.gravityScale = 1;
+            // 보스에게 데미지 입히기
+            BossController boss = collision.collider.GetComponent<BossController>();
+            if (boss != null)
+            {
+                boss.TakeDamage(attackDamage);
             }
 
             StartCoroutine(DelayAndDestroy());

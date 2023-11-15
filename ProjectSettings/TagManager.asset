@@ -19,6 +19,10 @@ TagManager:
   - enemy
   - Slash_left
   - Slash_right
+  - SkillType1
+  - SkillType2
+  - SkillType3
+  - Boss
   layers:
   - Default
   - TransparentFX

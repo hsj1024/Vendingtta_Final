@@ -20,11 +20,20 @@ public class FakeAttackSkill : MonoBehaviour
     private bool isPlayerAlive = true; // 플레이어가 살아있는지 여부를 나타내는 변수
     public delegate void SkillCompleted();
     public event SkillCompleted OnSkillCompleted;
+    private BossController bossController;
 
+    public enum BossSkillType
+    {
+        GhostAttack,
+        BossFlowerThrow,
+        FakeAttackSkill
+    }
 
 
     private void Start()
     {
+        bossController = BossController.Instance;
+
         mainCamera = Camera.main;
         screenHalfWidth = mainCamera.aspect * mainCamera.orthographicSize;
         StartCoroutine(ActivateFakeAttackSkill());
@@ -105,11 +114,23 @@ public class FakeAttackSkill : MonoBehaviour
         }
     }
 
-    // 스킬 완료 이벤트를 발생시키는 함수 추가
+    // 스킬 완료 시 보스 상태에 영향을 미치는 로직
     private void OnSkillCompletedInternal()
     {
         OnSkillCompleted?.Invoke();
+
+        // 예: 보스 체력이 0이면 보스 패배 처리
+        if (bossController != null && bossController.currentBossHealth <= 0)
+        {
+            bossController.BossDefeated();
+        }
     }
+
+    public void ActivateRandomSkill()
+    {
+        StartCoroutine(ActivateFakeAttackSkill());
+    }
+
 
 
 }
