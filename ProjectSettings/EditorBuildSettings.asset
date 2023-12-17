@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Chap1/Boss1_Chapter/Boss1_chapter.unity
     guid: eb04b6042e1c2c446886ade4ffe4dd9d
+  - enabled: 1
+    path: Assets/Chap1/Boss1_Chapter/boss1_defeat.unity
+    guid: 33b47fee1fd95ee4fad05a7f05ce2c7c
   m_configObjects: {}

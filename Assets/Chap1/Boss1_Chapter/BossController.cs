@@ -2,7 +2,10 @@ using UnityEngine;
 using TMPro;
 using System;
 using System.Collections.Generic;
+//using UnityEditor.SearchService;
+using UnityEngine.SceneManagement;
 
+// 보스 체력관리 스크립트
 public class BossController : MonoBehaviour
 {
     public static BossController Instance { get; private set; }
@@ -69,6 +72,8 @@ public class BossController : MonoBehaviour
     // 보스 사망 처리 함수
     public void BossDefeated()
     {
+        SceneManager.LoadScene("Chap1/Boss1_Chapter/boss1_defeat");
+    
         Debug.Log("All Bosses Defeated");
 
     }

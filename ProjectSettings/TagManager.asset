@@ -23,6 +23,13 @@ TagManager:
   - SkillType2
   - SkillType3
   - Boss
+  - Boundary1
+  - Boundary2
+  - Boundary3
+  - Boundary4
+  - Ground
+  - elec
+  - Flower
   layers:
   - Default
   - TransparentFX

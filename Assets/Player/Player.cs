@@ -160,7 +160,7 @@ private void InitializeComponents()
     private void RecoverHealth()
     {
         health += healthRecoveryAmount;
-        health = Mathf.Min(health, 100f); // 체력은 100을 초과할 수 없음
+        health = Mathf.Min(health, 10000f); // 체력은 100을 초과할 수 없음
         healthBar.RecoverHealth((int)healthRecoveryAmount);
     }
 
@@ -249,8 +249,19 @@ private void InitializeComponents()
             // 국화 스킬에 닿았을 때 (체력 감소와 넉백 발생)
             TakeDamage(20f, collision.transform);
         }
+        else if (collision.CompareTag("Flower"))
+        {
+            // 국화 스킬에 닿았을 때 (체력 감소와 넉백 발생)
+            TakeDamage(20f, collision.transform);
+        }
+        else if (collision.CompareTag("elec"))
+        {
+            TakeDamage(20f, collision.transform);
+
+        }
 
     }
+    
 
     private void PlayerController()
     {
