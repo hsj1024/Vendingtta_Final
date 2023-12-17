@@ -156,6 +156,9 @@ MonoBehaviour:
   coinDropAnimation: {fileID: 7400000, guid: 17154492d7ece7a4e8994a097599d6f7, type: 2}
   coinAnimationSpeed: 1
   slashSpawnDelay: 0.62
+  spacePrefab: {fileID: 3568777284494856307, guid: d2dd8be91898b054ca83aafad705b045, type: 3}
+  spacePressPrefab: {fileID: 3199148705607123640, guid: d6123c914baeb294ab2789495cb9228d, type: 3}
+  prefabOffset: {x: 0, y: 2, z: 0}
 --- !u!60 &-3995811024036961958
 PolygonCollider2D:
   m_ObjectHideFlags: 0

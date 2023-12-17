@@ -54,6 +54,11 @@ public class Mob2 : MonoBehaviour
     public static bool isPopHeadKillActive = false;
     public static bool isGlobalStop = false; // 클래스 레벨에서 정의
 
+    public GameObject spacePrefab; // Space 프리팹 참조
+    public GameObject spacePressPrefab; // Space_Press 프리팹 참조
+    private GameObject currentSpaceObject; // 현재 활성화된 Space 객체
+    public Vector3 prefabOffset; // 인스펙터에서 조절 가능한 프리팹 위치 오프셋
+
 
     public void TakeDamage(float damage, Transform attacker, bool applyDamage = true)
     {
@@ -87,36 +92,79 @@ public class Mob2 : MonoBehaviour
     }
 
 
+    public void OnPopHeadKill()
+    {
+        Debug.Log("OnPopHeadKill called in Mob");
+        Die();
+    }
+
+    public void EnterPopHeadKillState()
+    {
+        isPopHeadKillActive = true;
+        // 추가적인 로직 (예: 애니메이션 재생)...
+    }
+
     IEnumerator PopHeadKill()
     {
         isPopHeadKillActive = true;
-        isGlobalStop = true; // 전체 정지 상태를 활성화합니다.
-        FreezeAllMobs(true); // 모든 몬스터의 위치를 고정합니다.
+        isGlobalStop = true;
+        FreezeAllMobs(true);
 
+        // 팝헤드킬 상태 시작 시 플레이어의 targetMonster 설정
+        var playerComponent = FindObjectOfType<Player>();
+        if (playerComponent != null)
+        {
+            playerComponent.SetTargetMonster2(this);
+        }
+
+
+        // 팝헤드킬 상태 시작 시 카메라 확대
         MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
         if (cameraScript != null)
         {
-            cameraScript.StartCloseUp(transform);
+            cameraScript.StartCloseUp(transform); // 카메라를 이 몬스터에게 확대
         }
 
+        // 팝헤드킬 상태 시작 시 space 객체 활성화
+        currentSpaceObject.SetActive(true);
 
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
+        Color originalColor = renderer.color;
+        renderer.color = Color.red;
+
+        bool toggle = false;
         while (isPopHeadKillActive)
         {
-            renderer.color = Color.red;
-            yield return new WaitForSeconds(0.5f);
-            renderer.color = Color.red;
+            Destroy(currentSpaceObject);
+            GameObject prefabToInstantiate = toggle ? spacePrefab : spacePressPrefab;
+            currentSpaceObject = Instantiate(prefabToInstantiate, transform.position + prefabOffset, Quaternion.identity);
+            currentSpaceObject.transform.SetParent(transform);
+
+            toggle = !toggle;
             yield return new WaitForSeconds(0.5f);
         }
 
+        // 플레이어의 targetMonster 설정
+        if (playerComponent != null)
+        {
+            playerComponent.SetTargetMonster(null);
+        }
+
+        // 팝헤드킬 상태 종료 시 카메라 원래대로
         if (cameraScript != null)
         {
-            cameraScript.EndCloseUp(player); // 여기서 player는 이미 Start에서 설정된 플레이어의 Transform
+            cameraScript.EndCloseUp(player.transform); // player의 Transform 컴포넌트를 전달
         }
+        // 팝헤드킬 상태 종료 시 space 객체 비활성화
+        currentSpaceObject.SetActive(false);
 
+        // 원래 색상으로 복귀
+        renderer.color = originalColor;
 
-        FreezeAllMobs(false); // 모든 몬스터의 위치 고정을 해제합니다.
-        isGlobalStop = false; // 전체 정지 상태를 비활성화합니다.
+        FreezeAllMobs(false);
+        isGlobalStop = false;
+
+        yield break;
     }
 
     void FreezeAllMobs(bool shouldFreeze)
@@ -135,36 +183,62 @@ public class Mob2 : MonoBehaviour
 
     public void Die()
     {
-        if (Random.Range(0, 10) < 0)
+        if (isPopHeadKillActive)
         {
-
-            isGlobalStop = true; // 다른 몬스터들이 멈추도록 합니다.
-            StartCoroutine(PopHeadKill());
+            Debug.Log("Die method called in Mob");
+            // 팝헤드킬 상태일 때의 사망 처리
+            isPopHeadKillActive = false;
+            Mob2.isGlobalStop = false;
+            DropCoin(2); // 팝헤드킬 상태일 때 코인 2개 드랍
+            StartCoroutine(DeathAnimation());
         }
         else
         {
-            StartCoroutine(DeathAnimation());
+            // 일반 상태일 때의 사망 처리
+            if (Random.Range(0, 10) < 10)
+            {
+                isGlobalStop = true; // 다른 몬스터들이 멈추도록 합니다.
+                StartCoroutine(PopHeadKill());
+            }
+            else
+            {
+                DropCoin(1); // 일반 상태일 때 코인 1개 드랍
+                StartCoroutine(DeathAnimation());
+                Destroy(gameObject);
+            }
         }
     }
     public void AttackByPlayer()
     {
-        // PopHeadKill 상태에서 플레이어에게 공격받으면 즉시 사망 처리
         if (isPopHeadKillActive)
         {
-            isPopHeadKillActive = false; // PopHeadKill 상태 해제
-            StopCoroutine("PopHeadKill"); // 깜빡임 코루틴 정지
-                                          // 다른 몬스터들이 다시 움직일 수 있도록 합니다.
-            Mob2.isGlobalStop = false;
+            isPopHeadKillActive = false;
+            StopCoroutine("PopHeadKill"); // PopHeadKill 코루틴을 정지합니다.
+            Mob.isGlobalStop = false; // 다른 몬스터들이 움직일 수 있도록 합니다.
+
+            // 카메라를 원래 상태로 되돌립니다.
+            MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
+            if (cameraScript != null)
+            {
+                cameraScript.EndCloseUp(player.transform);
+            }
+
+            // space 객체를 비활성화합니다.
+            if (currentSpaceObject != null)
+            {
+                currentSpaceObject.SetActive(false);
+            }
 
             StartCoroutine(DeathAnimation());
         }
     }
+
 
 
 
     IEnumerator DeathAnimation()
     {
-        Debug.Log("DeathAnimation started");
+        //Debug.Log("DeathAnimation started");
         float elapsedTime = 0f;
         Vector3 originalPosition = transform.position;
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();

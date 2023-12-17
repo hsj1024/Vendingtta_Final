@@ -134,6 +134,9 @@ MonoBehaviour:
   coinPrefab: {fileID: 2091339850072999673, guid: 2cf1cc38a824dcc4185e3593895c495f, type: 3}
   coinDropAnimation: {fileID: 7400000, guid: 17154492d7ece7a4e8994a097599d6f7, type: 2}
   coinAnimationSpeed: 1
+  spacePrefab: {fileID: 3568777284494856307, guid: d2dd8be91898b054ca83aafad705b045, type: 3}
+  spacePressPrefab: {fileID: 3199148705607123640, guid: d6123c914baeb294ab2789495cb9228d, type: 3}
+  prefabOffset: {x: 0, y: 2, z: 0}
 --- !u!50 &-4795587081158908917
 Rigidbody2D:
   serializedVersion: 4

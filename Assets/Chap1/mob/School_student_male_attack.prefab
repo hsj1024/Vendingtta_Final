@@ -122,7 +122,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 100
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
@@ -156,9 +156,9 @@ MonoBehaviour:
   coinDropAnimation: {fileID: 7400000, guid: 17154492d7ece7a4e8994a097599d6f7, type: 2}
   coinAnimationSpeed: 1
   deathAnimationDuration: 0.1
-  imageOffset: {x: 0, y: 2, z: 0}
-  Keyboard_Sapce: {fileID: 21300000, guid: 733d162ad58ad53489d533785af68a50, type: 3}
-  Keyboard_Sapce_Press: {fileID: 21300000, guid: 23b92610b95c03447bb691e6e6e48da3, type: 3}
+  spacePrefab: {fileID: 3199148705607123640, guid: d6123c914baeb294ab2789495cb9228d, type: 3}
+  spacePressPrefab: {fileID: 3568777284494856307, guid: d2dd8be91898b054ca83aafad705b045, type: 3}
+  prefabOffset: {x: 0, y: 2, z: 0}
 --- !u!60 &-2448999967460142110
 PolygonCollider2D:
   m_ObjectHideFlags: 0

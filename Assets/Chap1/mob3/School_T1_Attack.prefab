@@ -126,12 +126,17 @@ MonoBehaviour:
   health: 9
   attackDamage: 0
   attackCooldown: 1.5
+  knockbackStrength: 100
+  knockbackDuration: 1
   mobSlashLeftPrefab: {fileID: 6875899323426183739, guid: e0261a0543966b2478344fc282dd72ba, type: 3}
   mobSlashRightPrefab: {fileID: 6908745203409532252, guid: 7e5f4d38e9584184bb42d987e8ea0d98, type: 3}
   deathAnimationDuration: 2
   coinPrefab: {fileID: 2091339850072999673, guid: 2cf1cc38a824dcc4185e3593895c495f, type: 3}
   coinDropAnimation: {fileID: 7400000, guid: 17154492d7ece7a4e8994a097599d6f7, type: 2}
   coinAnimationSpeed: 1
+  spacePrefab: {fileID: 3568777284494856307, guid: d2dd8be91898b054ca83aafad705b045, type: 3}
+  spacePressPrefab: {fileID: 3199148705607123640, guid: d6123c914baeb294ab2789495cb9228d, type: 3}
+  prefabOffset: {x: 0, y: 2, z: 0}
 --- !u!50 &1632032181643290621
 Rigidbody2D:
   serializedVersion: 4
