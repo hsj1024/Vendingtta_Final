@@ -282,7 +282,21 @@ public class MainGameController : MonoBehaviour
         }
     }
 
+    public void OnEnable()
+    {
+        Die.PlayerDiedEvent += StopGameActivities;
+    }
 
+    private void OnDisable()
+    {
+        Die.PlayerDiedEvent -= StopGameActivities;
+    }
+
+    private void StopGameActivities()
+    {
+        // 여기에 게임 활동 중지 로직 구현
+        this.enabled = false;
+    }
     private void ActivateRandomNormalSkill()
     {
         
@@ -313,8 +327,10 @@ public class MainGameController : MonoBehaviour
                 activeSkill = boss1;
             }
         }
-            
+
         
+
+
     }
     /*else
         {
