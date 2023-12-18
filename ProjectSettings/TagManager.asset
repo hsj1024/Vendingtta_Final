@@ -30,6 +30,11 @@ TagManager:
   - Ground
   - elec
   - Flower
+  - Boss2MouthPoint
+  - Boss2
+  - TargetPoint
+  - cable
+  - pop
   layers:
   - Default
   - TransparentFX
@@ -44,8 +49,8 @@ TagManager:
   - Monster
   - Boundary
   - MobAttack
-  - 
-  - 
+  - Boss2
+  - DIE
   - 
   - 
   - 
@@ -84,4 +89,7 @@ TagManager:
     locked: 0
   - name: 6
     uniqueID: 2942513045
+    locked: 0
+  - name: Boss2
+    uniqueID: 3313263733
     locked: 0

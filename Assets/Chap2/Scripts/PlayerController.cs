@@ -2,32 +2,33 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public enum PlayerPosition { Top, Middle, Bottom }
-    public PlayerPosition playerPosition;
+    public DieBoss2 dieBoss2Script; // DieBoss2 스크립트 참조
 
-    public GameObject camera; // 카메라 객체에 대한 참조
-
-    void Update()
+    private void Start()
     {
-        // 플레이어의 y축 위치에 따라 상태 업데이트
-        float yPosition = transform.position.y;
-        if (yPosition > 1)
+        // 참조가 없는 경우, 찾아서 설정
+        if (dieBoss2Script == null)
         {
-            playerPosition = PlayerPosition.Top;
-        }
-        else if (yPosition > -1)
-        {
-            playerPosition = PlayerPosition.Middle;
-        }
-        else
-        {
-            playerPosition = PlayerPosition.Bottom;
-        }
-
-        // 플레이어의 x좌표가 카메라의 x좌표보다 작아지지 않도록 제한
-        if (transform.position.x < camera.transform.position.x)
-        {
-            transform.position = new Vector3(camera.transform.position.x, transform.position.y, transform.position.z);
+            dieBoss2Script = FindObjectOfType<DieBoss2>();
         }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        // 'SpawnPoint' 태그를 가진 오브젝트와 충돌했을 때
+        if (other.CompareTag("Boss2MouthPoint"))
+        {
+            Debug.Log("죽음");
+            Die();
+        }
+    }
+    private void Die()
+    {
+        // Die 메소드가 호출되면 DieBoss2 스크립트의 PlayerDied 메소드 호출
+        if (dieBoss2Script != null)
+        {
+            dieBoss2Script.PlayerDied();
+        }
+    }
+
+    // 나머지 코드...
 }

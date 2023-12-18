@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System; // 이 줄을 추가하세요
 
 public class Die : MonoBehaviour
 {
@@ -13,11 +14,21 @@ public class Die : MonoBehaviour
     public TextMeshProUGUI retry;
     public float fadeDuration = 1.0f; // 페이드 인 시간
     private bool isDead = false; // 플레이어가 죽었는지 체크
+    public GameObject boss1;
+    public GameObject boss2;
+    public GameObject boss3;
+    public GameObject boss4;
+    public GameObject player;
+    public MainGameController mainGameController; // MainGameController에 대한 참조
+
+
+    public static event Action PlayerDiedEvent; // 죽음 이벤트
 
     void Update()
     {
-        if (isDead)
+        /*if (isDead)
         {
+            
             // 알파값 조절
             Color imageColor = blackImage.color;
             imageColor.a += Time.deltaTime / fadeDuration;
@@ -36,7 +47,7 @@ public class Die : MonoBehaviour
             Color retryTextColor = Retry.GetComponentInChildren<TextMeshProUGUI>().color;
             retryTextColor.a += Time.deltaTime / fadeDuration;
             Retry.GetComponentInChildren<TextMeshProUGUI>().color = retryTextColor;
-        }
+        }*/
     }
 
 
@@ -56,9 +67,22 @@ public class Die : MonoBehaviour
     {
         SceneManager.LoadScene("Chap1/Boss1_Chapter/Boss1_chapter");
     }
-
+    public void DeactivateAllGameObjectsWithTag(string tag)
+    {
+        GameObject[] objects = GameObject.FindGameObjectsWithTag(tag);
+        foreach (GameObject obj in objects)
+        {
+            obj.SetActive(false);
+        }
+    }
     public void PlayerDied()
     {
         isDead = true;
+        SceneManager.LoadScene("Chap1/Boss1_Chapter/boss1_defeat");
+
+
+
+
+
     }
 }
