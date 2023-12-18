@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Threading;
-//using System.Collections.Generic;
-//using UnityEditor.Experimental.GraphView;
+using System.Collections.Generic;//
+using UnityEditor.Experimental.GraphView;//
 using UnityEngine;
-//using UnityEngine.SocialPlatforms.Impl;
-//using UnityEngine.UI;
+using UnityEngine.SocialPlatforms.Impl;//
+using UnityEngine.UI;//
 
 
 
@@ -69,17 +69,22 @@ public class Player : MonoBehaviour
     public GameObject dieUI; // 이 변수에 DIE 텍스트와 이미지가 들어있는 GameObject를 연결합니다.
     public Die dieScript;
 
-    public Mob targetMonster;
-    private bool isPopHeadKillState = false;
+    public Mob targetMonster; // 타겟 몬스터 참조
+    public Mob2 targetMonster2;
+    public Mob3 targetMonster3;
+    public float popHeadKillDistance = 5.0f; // 팝헤드킬 활성화 거리
+    private bool isPopHeadKillActive = false;
+    [Header("Pop Head Kill Settings")]
+    [Tooltip("The sprite object for PopHeadKill")]
+    public GameObject popHeadKillSpriteObject; 
+
+
 
     private void Start()
     {
         InitializeComponents();
         currentEffect = Instantiate(healthRecoveryEffectPrefab, transform.position + Vector3.up * 0.5f, Quaternion.identity, transform);
         currentEffect.SetActive(false); // 초기에는 비활성화
-
-       
-
 
     }
 
@@ -124,9 +129,8 @@ public class Player : MonoBehaviour
     }
 
 
-private void InitializeComponents()
+    private void InitializeComponents()
     {
-      
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -191,26 +195,129 @@ private void InitializeComponents()
     {
         PlayerController();
 
-        if (Input.GetKeyDown(KeyCode.Space) && isPopHeadKillState)
+        if (isPopHeadKillActive)
         {
-            AttackMonster();
-        }
-
-        if (isPopHeadKillState)
-        {
-            HandlePopHeadKillMovement();
+            AttemptPopHeadKill();
         }
         else
         {
             HandleMovement();
         }
-    }
-    void AttackMonster()
-    {
-        // 몬스터 사망 처리
-        targetMonster.Die();
+
+
     }
 
+    public void SetTargetMonster(Mob newTarget)
+    {
+        targetMonster = newTarget;
+        if (targetMonster != null)
+        {
+            // 팝헤드킬 활성화와 관련된 추가 로직
+            isPopHeadKillActive = true;
+        }
+        else
+        {
+            // 팝헤드킬 비활성화와 관련된 추가 로직
+            isPopHeadKillActive = false;
+        }
+    }
+
+    public void SetTargetMonster2(Mob2 newTarget)
+    {
+        targetMonster2 = newTarget;
+        if (targetMonster2 != null)
+        {
+            // 팝헤드킬 활성화와 관련된 추가 로직
+            isPopHeadKillActive = true;
+        }
+        else
+        {
+            // 팝헤드킬 비활성화와 관련된 추가 로직
+            isPopHeadKillActive = false;
+        }
+    }
+
+    public void SetTargetMonster3(Mob3 newTarget)
+    {
+        targetMonster3 = newTarget;
+        if (targetMonster3 != null)
+        {
+            // 팝헤드킬 활성화와 관련된 추가 로직
+            isPopHeadKillActive = true;
+        }
+        else
+        {
+            // 팝헤드킬 비활성화와 관련된 추가 로직
+            isPopHeadKillActive = false;
+        }
+    }
+
+    private void AttemptPopHeadKill()
+    {
+        if (targetMonster != null && isPopHeadKillActive)
+        {
+            float distance = Vector2.Distance(transform.position, targetMonster.transform.position);
+            if (distance <= popHeadKillDistance && Input.GetKeyDown(KeyCode.Space))
+            {
+                //Debug.Log("Space key pressed for PopHeadKill");
+
+                StartCoroutine(PerformPopHeadKill());
+            }
+        }
+    }
+
+    private IEnumerator PerformPopHeadKill()
+    {
+        // 카메라 확대
+        MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
+        if (cameraScript != null)
+        {
+            cameraScript.StartCloseUp(targetMonster.transform); // 몬스터에게 카메라 확대
+        }
+
+        // 팝헤드킬 이미지 표시
+        PopHeadKillImage();
+
+        yield return new WaitForSeconds(1); // 1초 지연
+
+        // 몬스터 사망 처리
+        if (targetMonster != null)
+        {
+            targetMonster.Die();
+        }
+    }
+
+    private void PopHeadKillImage()
+    {
+        StartCoroutine(FadePopHeadKillSprite());
+    }
+
+    private IEnumerator FadePopHeadKillSprite()
+    {
+        SpriteRenderer spriteRenderer = popHeadKillSpriteObject.GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null) yield break;
+
+        // 스프라이트 위치를 플레이어 위치 위로 설정
+        popHeadKillSpriteObject.transform.position = transform.position;
+
+        popHeadKillSpriteObject.SetActive(true); // 스프라이트 활성화
+
+        popHeadKillSpriteObject.SetActive(false); // 스프라이트 비활성화
+    }
+
+
+void AttackMonster()
+    {
+        if (targetMonster != null)
+        {
+            // 몬스터 사망 처리
+            targetMonster.Die();
+        }
+        else
+        {
+            Debug.LogError("Target monster is not set.");
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -265,7 +372,7 @@ private void InitializeComponents()
 
     private void PlayerController()
     {
-        
+
         HandleRecovery();
         HandleMovement();
         HandleAttack();
@@ -303,41 +410,11 @@ private void InitializeComponents()
         rb.velocity = movement.normalized * moveSpeed;
     }
 
-
-    private void HandlePopHeadKillMovement()
-    {
-        Vector2 movement = Vector2.zero;
-
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            movement.x = -1f;
-            lastDirection = "Left";
-        }
-        else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            movement.x = 1f;
-            lastDirection = "Right";
-        }
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            movement.y = 1f;
-        }
-        else if (Input.GetKey(KeyCode.DownArrow))
-        {
-            movement.y = -1f;
-        }
-
-        rb.velocity = movement.normalized * moveSpeed;
-    }
     private void HandleAttack()
     {
-        if (isPopHeadKillState)
+        if (isPopHeadKillActive && Input.GetKeyDown(KeyCode.Space))
         {
-            
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                
-            }
+            AttackMonster();
         }
         else
         {
@@ -387,8 +464,6 @@ private void InitializeComponents()
             }
         }
     }
-
-
 
     private void FireCoffee()
     {

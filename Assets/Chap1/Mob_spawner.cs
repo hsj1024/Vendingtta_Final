@@ -33,7 +33,7 @@ public class Mob_spawner : MonoBehaviour
 
     void Start()
     {
-        List<GameObject> malePrefabsList = new List<GameObject>(schoolStudentMalePrefabs);  
+        List<GameObject> malePrefabsList = new List<GameObject>(schoolStudentMalePrefabs);
         schoolStudentMalePrefabs = malePrefabsList.ToArray();
 
         List<GameObject> femalePrefabsList = new List<GameObject>(schoolStudentFemalePrefabs);
@@ -178,5 +178,3 @@ public class Mob_spawner : MonoBehaviour
         }
     }
 }
-
-

@@ -16,13 +16,18 @@ public class MoveCamera : MonoBehaviour
     private float halfWidth;
 
     private bool isCloseUp = false;
+    private float originalSize;
+
 
     void Start()
     {
         cam = GetComponent<Camera>();
         halfHeight = cam.orthographicSize;
         halfWidth = halfHeight * cam.aspect;
+
+        originalSize = cam.orthographicSize; // 초기 카메라 크기 저장
     }
+
 
     public void StartCloseUp(Transform monsterTransform)
     {
@@ -34,15 +39,20 @@ public class MoveCamera : MonoBehaviour
     {
         target = playerTransform; // 플레이어를 다시 타겟으로 설정
         isCloseUp = false;
-        cam.orthographicSize = halfHeight * 2; // 카메라 사이즈를 원래대로 복구
+        cam.orthographicSize = originalSize; // 카메라 사이즈를 원래대로 복구
     }
+
 
     void LateUpdate()
     {
+        if (target == null)
+            return; // 타겟이 없다면 아무것도 하지 않고 반환
+
+
         if (isCloseUp)
         {
             // 타겟을 카메라 중심에 두도록 조정
-            Vector3 desiredPosition = new Vector3(target.position.x, target.position.y, -10f);
+            Vector3 desiredPosition = new Vector3(target.position.x, target.position.y, -5f);
             Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * closeUpSpeed);
 
             // 카메라 확대/축소
@@ -61,13 +71,13 @@ public class MoveCamera : MonoBehaviour
         }
         else
         {
-            Vector3 desiredPosition = new Vector3(target.position.x, target.position.y, -10f);
+            Vector3 desiredPosition = new Vector3(target.position.x, target.position.y, -5f);
             Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * speed);
 
             float clampedX = Mathf.Clamp(smoothedPosition.x, minBounds.x + halfWidth, maxBounds.x - halfWidth);
             float clampedY = Mathf.Clamp(smoothedPosition.y, minBounds.y + halfHeight, maxBounds.y - halfHeight);
 
-            transform.position = new Vector3(clampedX, clampedY, -10f);
+            transform.position = new Vector3(clampedX, clampedY, -5f);
         }
     }
 }

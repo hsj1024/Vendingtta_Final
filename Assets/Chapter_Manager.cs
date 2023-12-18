@@ -23,7 +23,7 @@ public class Chapter_Manager : MonoBehaviour
     public void StartChapter(int chapterNumber)
     {
         currentChapterNumber = chapterNumber;
-        Mob_Manager.Instance.ActivateSpawner(chapterNumber);
+        //Mob_Manager.Instance.ActivateSpawner(chapterNumber);
     }
 
     public int GetCurrentChapterNumber()

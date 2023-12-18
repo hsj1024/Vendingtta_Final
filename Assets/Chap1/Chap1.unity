@@ -1115,7 +1115,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.1
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 0
@@ -1562,7 +1562,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.54, y: 0, z: -10}
+  m_LocalPosition: {x: 1.54, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1585,8 +1585,8 @@ MonoBehaviour:
   speed: 5
   minBounds: {x: -8, y: -5}
   maxBounds: {x: 275, y: 1.5}
-  closeUpSize: 3
-  closeUpSpeed: 5
+  closeUpSize: 4
+  closeUpSpeed: 4
 --- !u!1 &528702928
 GameObject:
   m_ObjectHideFlags: 0
@@ -3530,13 +3530,13 @@ MonoBehaviour:
   - {fileID: 3324791582701073720, guid: df7afbcfd68146847865fd07131423e6, type: 3}
   - {fileID: 5370538536870015116, guid: 9d868d5d3e9d26a47abac5cfd4175269, type: 3}
   eliteMonsterPrefabs:
-  - {fileID: 833039919099588952, guid: afa23d0a93a8a094abcfa847fd5f46c8, type: 3}
   - {fileID: 5855581489807316105, guid: bf79e0823d5afbb4cb09c71827a1fa1c, type: 3}
+  - {fileID: 833039919099588952, guid: afa23d0a93a8a094abcfa847fd5f46c8, type: 3}
   player: {fileID: 1996132928}
-  spawnInterval: 7
+  spawnInterval: 5
   spawnRateAcceleration: 0.05
   minSpeed: 1
-  maxSpeed: 3
+  maxSpeed: 2
   maxMobCount: 20
   mainCamera: {fileID: 519420031}
   monstersPerWave: 5
@@ -4081,9 +4081,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eae6c9cadef393e49b59edc9c9e405b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chapterSpawners:
-  - chapterNumber: 1
-    mobSpawner: {fileID: 999540539}
 --- !u!1 &1315502801
 GameObject:
   m_ObjectHideFlags: 0
@@ -5495,7 +5492,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1996132923}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.62, y: -2.91, z: 0}
+  m_LocalPosition: {x: -6.16, y: -2.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5566,6 +5563,10 @@ MonoBehaviour:
   dieUI: {fileID: 869157744}
   dieScript: {fileID: 869157746}
   targetMonster: {fileID: 0}
+  targetMonster2: {fileID: 0}
+  targetMonster3: {fileID: 0}
+  popHeadKillDistance: 5
+  popHeadKillSpriteObject: {fileID: 6872351302762961933, guid: 3f032ed145dfe1d4a8c84a89c4b4b756, type: 3}
 --- !u!1 &1996948467 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4799816001207275030, guid: ba3f24a4be351b144879d4372bd0cbeb, type: 3}
