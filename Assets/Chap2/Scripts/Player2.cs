@@ -270,11 +270,7 @@ public class Player2 : MonoBehaviour
     private IEnumerator PerformPopHeadKill()
     {
         // 카메라 확대
-        MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
-        if (cameraScript != null)
-        {
-            cameraScript.StartCloseUp(targetMonster.transform); // 몬스터에게 카메라 확대
-        }
+       
 
         // 팝헤드킬 이미지 표시
         PopHeadKillImage();
