@@ -76,8 +76,28 @@ public class Player : MonoBehaviour
     private bool isPopHeadKillActive = false;
     [Header("Pop Head Kill Settings")]
     [Tooltip("The sprite object for PopHeadKill")]
-    public GameObject popHeadKillSpriteObject; 
+    public GameObject popHeadKillSpriteObject;
 
+    [Header("Attack Sound")]
+    public AudioClip attackSound; // 공격 효과음
+    private AudioSource audioSource; // 오디오 소스
+
+    [Header("Dash")]
+    [SerializeField]
+    private float dashSpeed = 10.0f;
+    [SerializeField]
+    private float dashDuration = 0.3f;
+    [SerializeField]
+    private float dashCooldown = 10f;
+    private float lastDashTime = 0.0f;
+    [Header("Dash Invincibility")]
+    [SerializeField]
+    private float dashInvincibilityDuration = 0.3f; // 대시 무적 지속 시간
+    [Header("Dash Effect")]
+    public GameObject dashEffectRightPrefab; // 오른쪽 대시 이펙트 프리팹
+    public GameObject dashEffectLeftPrefab; // 왼쪽 대시 이펙트 프리팹
+    public Vector2 dashEffectOffset; // 대시 이펙트의 생성 위치 오프셋
+    public float dashEffectDuration = 0.2f; // 대시 이펙트 지속 시간
 
 
     private void Start()
@@ -137,6 +157,7 @@ public class Player : MonoBehaviour
         rb.mass = 1.0f;
         rb.drag = 1.0f;
         ResetAnimatorParameters();
+        audioSource = GetComponent<AudioSource>(); // 오디오 소스 초기화
     }
 
     private void ResetAnimatorParameters()
@@ -164,7 +185,7 @@ public class Player : MonoBehaviour
     private void RecoverHealth()
     {
         health += healthRecoveryAmount;
-        health = Mathf.Min(health, 10000f); // 체력은 100을 초과할 수 없음
+        health = Mathf.Min(health, 100f); // 체력은 100을 초과할 수 없음
         healthBar.RecoverHealth((int)healthRecoveryAmount);
     }
 
@@ -202,10 +223,68 @@ public class Player : MonoBehaviour
         else
         {
             HandleMovement();
+            HandleDash(); 
         }
 
-
     }
+
+
+
+    private void HandleDash()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift)|| Input.GetKeyDown(KeyCode.RightShift) && Time.time - lastDashTime >= dashCooldown)
+        {
+            DoDash();
+            StartCoroutine(PerformDash());
+        }
+    }
+
+    private IEnumerator PerformDash()
+    {
+        isInvincible = true; // 대시 시작 시 무적 상태 활성화
+
+        float dashEndTime = Time.time + dashDuration;
+        while (Time.time < dashEndTime)
+        {
+            Vector2 dashDirection = lastDirection == "Right" ? Vector2.right : Vector2.left;
+            rb.velocity = dashDirection * dashSpeed;
+            yield return null;
+        }
+        rb.velocity = Vector2.zero;
+
+        yield return new WaitForSeconds(dashInvincibilityDuration - dashDuration); // 대시가 끝난 후 추가 무적 시간
+
+        isInvincible = false; // 무적 상태 비활성화
+
+        lastDashTime = Time.time;
+    }
+
+
+    private void DoDash()
+    {
+        // 대시 이펙트 생성 위치
+        Vector3 effectPosition = transform.position + new Vector3(dashEffectOffset.x, dashEffectOffset.y, 0f);
+
+        // 대시 이펙트 생성
+        GameObject dashEffect = null;
+        if (lastDirection == "Right")
+        {
+            dashEffect = Instantiate(dashEffectRightPrefab, effectPosition, Quaternion.identity);
+        }
+        else if (lastDirection == "Left")
+        {
+            dashEffect = Instantiate(dashEffectLeftPrefab, effectPosition, Quaternion.identity);
+        }
+
+        if (dashEffect != null)
+        {
+            Destroy(dashEffect, dashEffectDuration); // 설정된 시간 후에 대시 이펙트 삭제
+        }
+
+        lastDashTime = Time.time; // 대시 쿨다운 타이머 리셋
+    }
+
+
 
     public void SetTargetMonster(Mob newTarget)
     {
@@ -268,13 +347,13 @@ public class Player : MonoBehaviour
 
     private IEnumerator PerformPopHeadKill()
     {
-        // 카메라 확대
+      /*  // 카메라 확대
         MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
         if (cameraScript != null)
         {
             cameraScript.StartCloseUp(targetMonster.transform); // 몬스터에게 카메라 확대
         }
-
+      */
         // 팝헤드킬 이미지 표시
         PopHeadKillImage();
 
@@ -321,11 +400,10 @@ void AttackMonster()
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Monster"))
+        if (collision.CompareTag("Monster"))
         {
-            Vector2 knockbackDirection = (transform.position - collision.transform.position).normalized;
-            GetComponent<Rigidbody2D>().AddForce(knockbackDirection * knockbackStrength, ForceMode2D.Impulse);
-            // 플레이어에게 데미지를 주지 않고 넉백만 적용합니다.
+            // 몬스터 본체에 닿았을 때 (체력 감소 없이 넉백만 발생)
+            StartCoroutine(Knockback(collision.transform));
         }
         else if (collision.CompareTag("Claw_right") || collision.CompareTag("Claw_left"))
         {
@@ -382,6 +460,7 @@ void AttackMonster()
 
     private void HandleMovement()
     {
+       
         Vector2 movement = Vector2.zero;
 
         if (Input.GetKey(KeyCode.LeftArrow))
@@ -398,6 +477,12 @@ void AttackMonster()
             animator.SetBool("IsWalkingRight", true);
             animator.SetBool("IsWalkingLeft", false);
         }
+        else // 이 부분은 플레이어가 멈췄을 때 애니메이션을 정지시킵니다.
+        {
+            animator.SetBool("IsWalkingLeft", false);
+            animator.SetBool("IsWalkingRight", false);
+        }
+
         if (Input.GetKey(KeyCode.UpArrow))
         {
             movement.y = 1f;
@@ -409,6 +494,7 @@ void AttackMonster()
 
         rb.velocity = movement.normalized * moveSpeed;
     }
+
 
     private void HandleAttack()
     {
@@ -442,6 +528,11 @@ void AttackMonster()
                 if ((Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.W)) && Time.time - lastFireTime >= coffeeFireCooldown)
                 {
                     lastFireTime = Time.time;
+
+                    if (attackSound != null && audioSource != null)
+                    {
+                        audioSource.PlayOneShot(attackSound);
+                    }
 
                     if (lastDirection == "Right")
                     {
@@ -572,4 +663,5 @@ void AttackMonster()
         dieScript.PlayerDied();
         Debug.Log("Die");
     }
+
 }

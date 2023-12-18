@@ -56,7 +56,7 @@ public class UIManager : MonoBehaviour
 
     public void UpdateCoinText()
     {
-        Debug.Log("Updating coin text");
+       // Debug.Log("Updating coin text");
         if (Coin_Count != null)
         {
             Coin_Count.text = "X " + coinCount;

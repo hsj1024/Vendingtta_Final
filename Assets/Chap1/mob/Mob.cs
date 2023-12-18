@@ -74,10 +74,15 @@ public class Mob : MonoBehaviour
 
 
 
-
     // 몬스터가 데미지를 받으면 이 함수를 호출합니다.
     public void TakeDamage(float damage, Transform attacker, bool applyDamage = true)
     {
+        // 팝헤드킬 상태일 때는 데미지를 받지 않도록 합니다.
+        if (isPopHeadKillActive)
+        {
+            return;
+        }
+
         if (applyDamage)
         {
             health -= damage;
@@ -88,7 +93,8 @@ public class Mob : MonoBehaviour
             }
         }
 
-        if (rb != null && attacker.CompareTag("Player")) // 'Player' 태그를 가진 공격자에게만 넉백 적용
+        // 'Player' 태그를 가진 공격자에게만 넉백 적용
+        if (rb != null && attacker.CompareTag("Player"))
         {
             StartCoroutine(Knockback(attacker));
         }
@@ -111,17 +117,25 @@ public class Mob : MonoBehaviour
     {
         if (isPopHeadKillActive)
         {
-            Debug.Log("Die method called in Mob");
-            // 팝헤드킬 상태일 때의 사망 처리
-            isPopHeadKillActive = false;
-            Mob.isGlobalStop = false;
-            DropCoin(2); // 팝헤드킬 상태일 때 코인 2개 드랍
+          // 팝헤드킬 상태일 때의 사망 처리
+            isPopHeadKillActive = false; // 팝헤드킬 상태 해제
+            Mob.isGlobalStop = false; // 다른 몬스터들의 정지 상태 해제
+            DropCoin(1); // 코인 2개 드랍
             StartCoroutine(DeathAnimation());
+
+            // 다른 몬스터들의 정지 상태를 해제하는 로직 추가
+            FreezeAllMobs(false);
+
+            /*MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
+            if (cameraScript != null)
+            {
+                cameraScript.EndCloseUp();
+            }*/
         }
         else
         {
             // 일반 상태일 때의 사망 처리
-            if (Random.Range(0, 10) < 1)
+            if (Random.Range(0, 10) < 2)
             {
                 isGlobalStop = true; // 다른 몬스터들이 멈추도록 합니다.
                 StartCoroutine(PopHeadKill());
@@ -137,7 +151,8 @@ public class Mob : MonoBehaviour
     // 팝헤드킬 상태에서 플레이어에게 공격받으면 호출되는 메서드
     public void OnPopHeadKill()
     {
-        Debug.Log("OnPopHeadKill called in Mob");
+        //Debug.Log("OnPopHeadKill called in Mob");
+
         Die();
     }
 
@@ -145,6 +160,8 @@ public class Mob : MonoBehaviour
     {
         isPopHeadKillActive = true;
         // 추가적인 로직 (예: 애니메이션 재생)...
+
+        animator.StopPlayback();
     }
 
     IEnumerator PopHeadKill()
@@ -162,11 +179,11 @@ public class Mob : MonoBehaviour
 
 
         // 팝헤드킬 상태 시작 시 카메라 확대
-        MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
+       /* MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
         if (cameraScript != null)
         {
             cameraScript.StartCloseUp(transform); // 카메라를 이 몬스터에게 확대
-        }
+        }*/
 
         // 팝헤드킬 상태 시작 시 space 객체 활성화
         currentSpaceObject.SetActive(true);
@@ -193,11 +210,14 @@ public class Mob : MonoBehaviour
             playerComponent.SetTargetMonster(null);
         }
 
-        // 팝헤드킬 상태 종료 시 카메라 원래대로
+       /* // 팝헤드킬 상태 종료 시 카메라 원래대로
         if (cameraScript != null)
         {
-            cameraScript.EndCloseUp(player.transform); // player의 Transform 컴포넌트를 전달
+            cameraScript.EndCloseUp();
+
         }
+       */
+
         // 팝헤드킬 상태 종료 시 space 객체 비활성화
         currentSpaceObject.SetActive(false);
 
@@ -234,12 +254,13 @@ public class Mob : MonoBehaviour
             StopCoroutine("PopHeadKill"); // PopHeadKill 코루틴을 정지합니다.
             Mob.isGlobalStop = false; // 다른 몬스터들이 움직일 수 있도록 합니다.
 
-            // 카메라를 원래 상태로 되돌립니다.
+           /* // 카메라를 원래 상태로 되돌립니다.
             MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
             if (cameraScript != null)
             {
-                cameraScript.EndCloseUp(player.transform);
+                cameraScript.EndCloseUp();
             }
+           */
 
             // space 객체를 비활성화합니다.
             if (currentSpaceObject != null)
@@ -372,10 +393,16 @@ public class Mob : MonoBehaviour
 
     void Update()
     {
-        // 전체 정지 상태 또는 PopHeadKill 상태일 경우, 아래의 모든 행동을 중지합니다.
-        if (Mob.isGlobalStop) // Mob 클래스에 정의된 isGlobalStop을 참조
+        if (Mob.isGlobalStop || isPopHeadKillActive)
         {
-            // 이곳에서 추가적인 정지 조건이 필요한 경우 구현
+            // 모든 애니메이션을 중지합니다.
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack") ||
+                animator.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
+               
+            {
+                animator.StopPlayback();
+            }
+
             return;
         }
         // 플레이어가 없으면 아무것도 하지 않음
@@ -433,11 +460,19 @@ public class Mob : MonoBehaviour
         }
     }
 
+
     void AttackControl()
     {
+        // 팝헤드킬 상태일 때는 공격 로직을 건너뜁니다.
+        if (isPopHeadKillActive)
+        {
+            return;
+        }
+
+        // 공격이 가능한 상태와 시간 체크
         if (Vector3.Distance(transform.position, player.position) < distanceToAttack && Time.time >= nextAttackTime)
         {
-            nextAttackTime = Time.time + attackCooldown; // 인스펙터에서 설정한 쿨다운 적용
+            nextAttackTime = Time.time + attackCooldown;
             attackAnimationEndTime = Time.time + attackAnimationLength;
             animator.SetBool("IsAttackingSchool", true);
             Invoke("SpawnClawWithDelay", clawSpawnDelay);

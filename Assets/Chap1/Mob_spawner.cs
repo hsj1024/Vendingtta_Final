@@ -9,14 +9,14 @@ public class Mob_spawner : MonoBehaviour
     public GameObject[] eliteMonsterPrefabs;
     public Transform player;
     public float spawnInterval = 5f;
-    public float spawnRateAcceleration = 0.05f;
+    public float spawnRateAcceleration = 0.01f;
 
     [Header("Speed Settings")]
     public int minSpeed = 1;  // 최소 속도를 1로 설정
     public int maxSpeed = 2;  // 최대 속도를 3으로 설정
 
     [Header("Spawn Limit Settings")]
-    public int maxMobCount = 7;
+    public int maxMobCount = 5;
     public Camera mainCamera;
 
     [Header("Wave Settings")]

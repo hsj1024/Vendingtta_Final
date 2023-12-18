@@ -92,7 +92,7 @@ public class ImageFadeIn : MonoBehaviour
 
     public void OnButtonClick()
     {
-        Debug.Log("버튼이 클릭되었습니다!");
+        //Debug.Log("버튼이 클릭되었습니다!");
     }
 
 

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -8723458155629770899}
   - component: {fileID: -8553192902985025593}
   - component: {fileID: 8922439760984195914}
-  - component: {fileID: 8691223472762211618}
+  - component: {fileID: 8029501879885538847}
   m_Layer: 10
   m_Name: School_student_female_idle
   m_TagString: Monster
@@ -159,8 +159,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!60 &8691223472762211618
-PolygonCollider2D:
+--- !u!70 &8029501879885538847
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -172,38 +172,6 @@ PolygonCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.26, y: 2.51}
-    newSize: {x: 1.26, y: 2.51}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.48, y: -0.66499996}
-      - {x: 0.48, y: 0.525}
-      - {x: 0.48999998, y: 0.905}
-      - {x: 0.47, y: 1.015}
-      - {x: 0.22, y: 1.255}
-      - {x: -0.24, y: 1.255}
-      - {x: -0.44, y: 1.125}
-      - {x: -0.52, y: 0.825}
-      - {x: -0.62, y: 0.78499997}
-      - {x: -0.58, y: 0.675}
-      - {x: -0.52, y: 0.66499996}
-      - {x: -0.51, y: -0.015}
-      - {x: -0.48999998, y: -0.645}
-      - {x: -0.53999996, y: -0.825}
-      - {x: -0.63, y: -0.905}
-      - {x: -0.63, y: -1.055}
-      - {x: -0.58, y: -1.145}
-      - {x: -0.45, y: -1.225}
-      - {x: -0.35, y: -1.255}
-      - {x: 0.44, y: -1.255}
-      - {x: 0.62, y: -1.095}
-      - {x: 0.63, y: -1.055}
-      - {x: 0.63, y: -0.875}
+  m_Offset: {x: -0.02938509, y: -0.024042368}
+  m_Size: {x: 0.9020376, y: 2.4619155}
+  m_Direction: 0

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5370538536870015117}
   - component: {fileID: -6345354876757212064}
   - component: {fileID: 6776838953650067019}
-  - component: {fileID: 7554828288339850868}
+  - component: {fileID: 5262706943381662036}
   m_Layer: 10
   m_Name: School_F2_Idle
   m_TagString: Monster
@@ -159,8 +159,8 @@ MonoBehaviour:
   spacePrefab: {fileID: 3568777284494856307, guid: d2dd8be91898b054ca83aafad705b045, type: 3}
   spacePressPrefab: {fileID: 3199148705607123640, guid: d6123c914baeb294ab2789495cb9228d, type: 3}
   prefabOffset: {x: 0, y: 2, z: 0}
---- !u!60 &7554828288339850868
-PolygonCollider2D:
+--- !u!70 &5262706943381662036
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -172,54 +172,6 @@ PolygonCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.09, y: 2.52}
-    newSize: {x: 1.09, y: 2.52}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.545, y: -0.76}
-      - {x: 0.36499998, y: -0.65}
-      - {x: 0.405, y: -0.45}
-      - {x: 0.375, y: -0.44}
-      - {x: 0.355, y: -0.14999999}
-      - {x: 0.305, y: 0.16}
-      - {x: 0.265, y: 0.24}
-      - {x: 0.205, y: 0.26999998}
-      - {x: 0.255, y: 0.39}
-      - {x: 0.355, y: 0.48999998}
-      - {x: 0.415, y: 0.7}
-      - {x: 0.36499998, y: 0.97999996}
-      - {x: 0.275, y: 1.11}
-      - {x: 0.185, y: 1.1999999}
-      - {x: 0.13499999, y: 1.24}
-      - {x: 0.085, y: 1.26}
-      - {x: -0.315, y: 1.26}
-      - {x: -0.49499997, y: 1.12}
-      - {x: -0.545, y: 0.97999996}
-      - {x: -0.545, y: 0.71}
-      - {x: -0.475, y: 0.48}
-      - {x: -0.435, y: 0.38}
-      - {x: -0.235, y: 0.24}
-      - {x: -0.375, y: 0.22}
-      - {x: -0.45499998, y: 0.11}
-      - {x: -0.45499998, y: -0.14999999}
-      - {x: -0.515, y: -0.59999996}
-      - {x: -0.515, y: -0.72999996}
-      - {x: -0.475, y: -0.84999996}
-      - {x: -0.49499997, y: -0.95}
-      - {x: -0.515, y: -1.13}
-      - {x: -0.45499998, y: -1.16}
-      - {x: -0.33499998, y: -1.1999999}
-      - {x: 0.155, y: -1.1999999}
-      - {x: 0.285, y: -1.26}
-      - {x: 0.445, y: -1.26}
-      - {x: 0.49499997, y: -1.12}
-      - {x: 0.53499997, y: -0.98999995}
-      - {x: 0.545, y: -0.96}
+  m_Offset: {x: -0.065707445, y: 0.023893476}
+  m_Size: {x: 0.71965075, y: 2.233278}
+  m_Direction: 0

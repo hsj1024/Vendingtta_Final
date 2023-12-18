@@ -9,6 +9,8 @@ MonoImporter:
   - mobSlashRightPrefab: {fileID: 6908745203409532252, guid: 7e5f4d38e9584184bb42d987e8ea0d98, type: 3}
   - coinPrefab: {fileID: 2091339850072999673, guid: 2cf1cc38a824dcc4185e3593895c495f, type: 3}
   - coinDropAnimation: {fileID: 7400000, guid: 17154492d7ece7a4e8994a097599d6f7, type: 2}
+  - spacePrefab: {fileID: 3568777284494856307, guid: bd0a3e169b2dd1d4ab428d3863a2063a, type: 3}
+  - spacePressPrefab: {fileID: 3199148705607123640, guid: 78495f2dc5b05be4591a9e48e704c723, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

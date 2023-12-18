@@ -24,6 +24,8 @@ public class Die : MonoBehaviour
 
     public static event Action PlayerDiedEvent; // Á×À½ ÀÌº¥Æ®
 
+   
+
     void Update()
     {
         /*if (isDead)
@@ -54,7 +56,7 @@ public class Die : MonoBehaviour
     public void next1()
     {
         
-            SceneManager.LoadScene("Chapter_Select/Select");
+      SceneManager.LoadScene("Chapter_Select/Select");
 
     }
 

@@ -1,8 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using System.Collections.Generic;
-//using UnityEditor.Experimental.GraphView;
-
 public class Mob3 : MonoBehaviour
 {
     [Header("Mob Parameters")]
@@ -46,14 +43,21 @@ public class Mob3 : MonoBehaviour
     [Range(0.1f, 3f)]
     public float coinAnimationSpeed = 1f;
 
+    [Header("Attack Settings")]
+    [Tooltip("Delay before the slash ")]
+    [SerializeField]
+    private float slashSpawnDelay = 0.3f;
 
     public static bool isPopHeadKillActive = false;
     public static bool isGlobalStop = false; // 클래스 레벨에서 정의
+
 
     public GameObject spacePrefab; // Space 프리팹 참조
     public GameObject spacePressPrefab; // Space_Press 프리팹 참조
     private GameObject currentSpaceObject; // 현재 활성화된 Space 객체
     public Vector3 prefabOffset; // 인스펙터에서 조절 가능한 프리팹 위치 오프셋
+    private MoveCamera cameraScript;
+    private bool isCoinDropped = false;
 
 
     public void TakeDamage(float damage, Transform attacker, bool applyDamage = true)
@@ -72,6 +76,12 @@ public class Mob3 : MonoBehaviour
         {
             StartCoroutine(Knockback(attacker));
         }
+
+        if (isPopHeadKillActive)
+        {
+            // 팝헤드킬 상태일 때는 일반 공격으로는 죽지 않습니다.
+            return;
+        }
     }
 
     IEnumerator Knockback(Transform attacker)
@@ -89,7 +99,7 @@ public class Mob3 : MonoBehaviour
 
     public void OnPopHeadKill()
     {
-        Debug.Log("OnPopHeadKill called in Mob");
+        //Debug.Log("OnPopHeadKill called in Mob");
         Die();
     }
 
@@ -114,11 +124,11 @@ public class Mob3 : MonoBehaviour
 
 
         // 팝헤드킬 상태 시작 시 카메라 확대
-        MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
-        if (cameraScript != null)
-        {
-            cameraScript.StartCloseUp(transform); // 카메라를 이 몬스터에게 확대
-        }
+        /* MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
+         if (cameraScript != null)
+         {
+             cameraScript.StartCloseUp(transform); // 카메라를 이 몬스터에게 확대
+         }*/
 
         // 팝헤드킬 상태 시작 시 space 객체 활성화
         currentSpaceObject.SetActive(true);
@@ -145,11 +155,14 @@ public class Mob3 : MonoBehaviour
             playerComponent.SetTargetMonster(null);
         }
 
-        // 팝헤드킬 상태 종료 시 카메라 원래대로
-        if (cameraScript != null)
-        {
-            cameraScript.EndCloseUp(player.transform); // player의 Transform 컴포넌트를 전달
-        }
+        /* // 팝헤드킬 상태 종료 시 카메라 원래대로
+         if (cameraScript != null)
+         {
+             cameraScript.EndCloseUp();
+
+         }
+        */
+
         // 팝헤드킬 상태 종료 시 space 객체 비활성화
         currentSpaceObject.SetActive(false);
 
@@ -161,6 +174,7 @@ public class Mob3 : MonoBehaviour
 
         yield break;
     }
+
 
 
     void FreezeAllMobs(bool shouldFreeze)
@@ -181,53 +195,39 @@ public class Mob3 : MonoBehaviour
     {
         if (isPopHeadKillActive)
         {
-            Debug.Log("Die method called in Mob");
             // 팝헤드킬 상태일 때의 사망 처리
             isPopHeadKillActive = false;
-            Mob3.isGlobalStop = false;
-            DropCoin(2); // 팝헤드킬 상태일 때 코인 2개 드랍
+            Mob.isGlobalStop = false;
+            // 팝헤드킬 상태에서만 DeathAnimation 코루틴 호출
             StartCoroutine(DeathAnimation());
         }
-        else
-        {
-            // 일반 상태일 때의 사망 처리
-            if (Random.Range(0, 10) < 10)
-            {
-                isGlobalStop = true; // 다른 몬스터들이 멈추도록 합니다.
-                StartCoroutine(PopHeadKill());
-            }
-            else
-            {
-                // StartCoroutine(DeathAnimation()); // 이전 애니메이션 관련 코드 주석 처리
-                Destroy(gameObject);
-            }
-        }
     }
+
 
     public void AttackByPlayer()
     {
-        if (isPopHeadKillActive)
+        // 팝헤드킬 상태일 때만 아래 로직을 실행합니다.
+        if (!isPopHeadKillActive)
         {
-            isPopHeadKillActive = false;
-            StopCoroutine("PopHeadKill"); // PopHeadKill 코루틴을 정지합니다.
-            Mob.isGlobalStop = false; // 다른 몬스터들이 움직일 수 있도록 합니다.
-
-            // 카메라를 원래 상태로 되돌립니다.
-            MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
-            if (cameraScript != null)
-            {
-                cameraScript.EndCloseUp(player.transform);
-            }
-
-            // space 객체를 비활성화합니다.
-            if (currentSpaceObject != null)
-            {
-                currentSpaceObject.SetActive(false);
-            }
-
-            StartCoroutine(DeathAnimation());
+            return; // 팝헤드킬 상태가 아니라면 아무 작업도 하지 않고 함수를 종료합니다.
         }
+
+        isPopHeadKillActive = false; // 팝헤드킬 상태를 비활성화합니다.
+        StopCoroutine("PopHeadKill"); // PopHeadKill 코루틴을 정지합니다.
+        Mob3.isGlobalStop = false; // 전역 정지 상태를 해제합니다.
+
+        // 카메라를 원래 상태로 되돌립니다.
+       // ResetCameraToPlayer();
+
+        // space 객체를 비활성화합니다.
+        if (currentSpaceObject != null)
+        {
+            currentSpaceObject.SetActive(false);
+        }
+
+        StartCoroutine(DeathAnimation()); // 사망 애니메이션을 실행합니다.
     }
+
 
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -238,6 +238,7 @@ public class Mob3 : MonoBehaviour
             if (!animator.GetBool("IsAttackingSchool"))
             {
                 // 아무 동작도 하지 않습니다.
+
                 return;
             }
 
@@ -267,18 +268,10 @@ public class Mob3 : MonoBehaviour
             newPosition.y -= ratio;  // 아래로 움직이는 정도를 조절하려면 이 값을 조절하세요.
             transform.position = newPosition;
 
-            // 코인을 떨어트립니다. (최초 한 번만)
-            if (ratio > 0 && coinPrefab != null)
+            if (ratio > 0.5 && !isCoinDropped) // 코인이 아직 떨어지지 않았다면
             {
-                if (isPopHeadKillActive)
-                {
-                    DropCoin(2);  // 팝헤드킬 상태일 때 코인 두 개 드랍
-                }
-                else
-                {
-                    DropCoin();  // 일반 상태일 때 코인 한 개 드랍
-                }
-                coinPrefab = null;  // 코인을 한 번만 떨어트리도록 합니다.
+                DropCoin(3); // 팝헤드킬 상태일 때 코인 3개 드랍
+                isCoinDropped = true; // 코인을 떨어뜨렸다고 표시합니다.
             }
 
             elapsedTime += Time.deltaTime;
@@ -288,6 +281,8 @@ public class Mob3 : MonoBehaviour
         OnDeath?.Invoke();
         Destroy(gameObject);
     }
+
+
 
     void DropCoin(int amount = 1)
     {
@@ -322,6 +317,7 @@ public class Mob3 : MonoBehaviour
         }
         player = playerObject.transform;
         //Debug.Log("Player object found.");
+
     }
 
     void Awake()
@@ -366,6 +362,8 @@ public class Mob3 : MonoBehaviour
         if (Mob.isGlobalStop) // Mob 클래스에 정의된 isGlobalStop을 참조
         {
             // 이곳에서 추가적인 정지 조건이 필요한 경우 구현
+            StopAllAnimations();
+            StopMovement();
             return;
         }
 
@@ -376,6 +374,23 @@ public class Mob3 : MonoBehaviour
         MoveControl();
         AttackControl();
         UpdateAttackAnimation();
+        cameraScript = Camera.main.GetComponent<MoveCamera>();
+    }
+
+    void StopAllAnimations()
+    {
+
+        animator.SetBool("IsWalkingSchool", false);
+        animator.SetBool("IsAttackingSchool", false);
+    }
+
+    void StopMovement()
+    {
+        // Rigidbody의 움직임을 정지시키는 로직을 추가하세요.
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+        }
     }
 
     void LookAtPlayer()
@@ -431,11 +446,11 @@ public class Mob3 : MonoBehaviour
         {
             nextAttackTime = Time.time + attackCooldown;
             attackAnimationEndTime = Time.time + attackAnimationLength;
-
             animator.SetBool("IsAttackingSchool", true);
-            Invoke("SpawnSlashithDelay", 0.7f);  // 슬래쉬가 나타나고 데미지를 주는 함수
+            Invoke("SpawnSlashWithDelay", slashSpawnDelay); // 여기서 호출합니다.
         }
     }
+
 
     void SpawnSlashWithDelay()
     {
@@ -500,8 +515,26 @@ public class Mob3 : MonoBehaviour
         private void Awake()
         {
             slashCollider = GetComponent<Collider2D>();
-            // DisableCollider();
         }
 
+        public void EnableCollider()
+        {
+            if (this == null || gameObject == null) return;
+
+            isColliderEnabled = true;
+            slashCollider.enabled = true;
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.CompareTag("Player") && isColliderEnabled)
+            {
+                Player player = collision.GetComponent<Player>();
+                if (player != null)
+                {
+                    player.TakeDamage(damage, transform);
+                }
+            }
+        }
     }
 }

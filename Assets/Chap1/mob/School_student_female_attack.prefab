@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4550587765610269123}
   - component: {fileID: -707151336922718673}
   - component: {fileID: -4788350132101743110}
-  - component: {fileID: 8866259791008834598}
+  - component: {fileID: 4223435466087302282}
   m_Layer: 10
   m_Name: School_student_female_attack
   m_TagString: Monster
@@ -159,8 +159,8 @@ MonoBehaviour:
   spacePrefab: {fileID: 3199148705607123640, guid: d6123c914baeb294ab2789495cb9228d, type: 3}
   spacePressPrefab: {fileID: 3568777284494856307, guid: d2dd8be91898b054ca83aafad705b045, type: 3}
   prefabOffset: {x: 0, y: 2, z: 0}
---- !u!60 &8866259791008834598
-PolygonCollider2D:
+--- !u!70 &4223435466087302282
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -172,38 +172,6 @@ PolygonCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.29, y: 2.55}
-    newSize: {x: 1.26, y: 2.51}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.475, y: 0.525}
-      - {x: 0.48499998, y: 0.905}
-      - {x: 0.465, y: 1.015}
-      - {x: 0.24499999, y: 1.2049999}
-      - {x: 0.105, y: 1.275}
-      - {x: -0.185, y: 1.275}
-      - {x: -0.255, y: 1.245}
-      - {x: -0.42499998, y: 1.115}
-      - {x: -0.475, y: 0.97499996}
-      - {x: -0.42416382, y: 1.1075549}
-      - {x: -0.585, y: 0.675}
-      - {x: -0.525, y: 0.66499996}
-      - {x: -0.42371094, y: 0.0032578306}
-      - {x: -0.49499997, y: -0.645}
-      - {x: -0.555, y: -0.815}
-      - {x: -0.645, y: -0.955}
-      - {x: -0.5597968, y: -1.0936875}
-      - {x: -0.515, y: -1.1949999}
-      - {x: -0.325, y: -1.275}
-      - {x: 0.445, y: -1.275}
-      - {x: 0.645, y: -1.035}
-      - {x: 0.645, y: -0.91499996}
-      - {x: 0.475, y: -0.66499996}
+  m_Offset: {x: -0.021300793, y: 0.08824611}
+  m_Size: {x: 0.9309292, y: 2.2274446}
+  m_Direction: 0

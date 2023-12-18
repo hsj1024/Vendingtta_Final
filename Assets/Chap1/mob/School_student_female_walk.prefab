@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3835546580260992874}
   - component: {fileID: 4807546628287988213}
   - component: {fileID: 1252598236713773532}
-  - component: {fileID: 7120904769525334094}
+  - component: {fileID: 276535063128013945}
   m_Layer: 10
   m_Name: School_student_female_walk
   m_TagString: Monster
@@ -159,8 +159,8 @@ MonoBehaviour:
   spacePrefab: {fileID: 3199148705607123640, guid: d6123c914baeb294ab2789495cb9228d, type: 3}
   spacePressPrefab: {fileID: 3568777284494856307, guid: d2dd8be91898b054ca83aafad705b045, type: 3}
   prefabOffset: {x: 0, y: 2, z: 0}
---- !u!60 &7120904769525334094
-PolygonCollider2D:
+--- !u!70 &276535063128013945
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -172,40 +172,6 @@ PolygonCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.27, y: 2.53}
-    newSize: {x: 1.26, y: 2.51}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.475, y: -0.66499996}
-      - {x: 0.475, y: 0.525}
-      - {x: 0.48499998, y: 0.905}
-      - {x: 0.465, y: 1.015}
-      - {x: 0.24499999, y: 1.2049999}
-      - {x: 0.125, y: 1.265}
-      - {x: -0.21499999, y: 1.265}
-      - {x: -0.255, y: 1.245}
-      - {x: -0.42499998, y: 1.115}
-      - {x: -0.475, y: 0.97499996}
-      - {x: -0.625, y: 0.78499997}
-      - {x: -0.585, y: 0.675}
-      - {x: -0.525, y: 0.66499996}
-      - {x: -0.515, y: -0.015}
-      - {x: -0.49499997, y: -0.645}
-      - {x: -0.555, y: -0.815}
-      - {x: -0.635, y: -0.945}
-      - {x: -0.635, y: -1.0649999}
-      - {x: -0.525, y: -1.1949999}
-      - {x: -0.375, y: -1.265}
-      - {x: 0.315, y: -1.265}
-      - {x: 0.435, y: -1.255}
-      - {x: 0.615, y: -1.095}
-      - {x: 0.635, y: -1.025}
-      - {x: 0.635, y: -0.875}
+  m_Offset: {x: -0.011619031, y: 0.0058095455}
+  m_Size: {x: 0.8865715, y: 2.4021907}
+  m_Direction: 0

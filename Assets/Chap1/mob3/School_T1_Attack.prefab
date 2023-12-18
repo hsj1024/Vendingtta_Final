@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8855278844010187903}
   - component: {fileID: -7194232568232009433}
   - component: {fileID: 1632032181643290621}
-  - component: {fileID: -2939063766151338413}
+  - component: {fileID: 4094981645742171422}
   m_Layer: 10
   m_Name: School_T1_Attack
   m_TagString: Monster
@@ -158,8 +158,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!60 &-2939063766151338413
-PolygonCollider2D:
+--- !u!70 &4094981645742171422
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -171,43 +171,6 @@ PolygonCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.01, y: 2.24}
-    newSize: {x: 1.01, y: 2.24}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.42499998, y: -0.26}
-      - {x: 0.385, y: 0.08}
-      - {x: 0.13499999, y: 0.25}
-      - {x: 0.175, y: 0.29}
-      - {x: 0.39499998, y: 0.53999996}
-      - {x: 0.405, y: 0.83}
-      - {x: 0.385, y: 0.91999996}
-      - {x: 0.255, y: 1.06}
-      - {x: 0.21499999, y: 1.12}
-      - {x: -0.305, y: 1.12}
-      - {x: -0.445, y: 0.96999997}
-      - {x: -0.465, y: 0.9}
-      - {x: -0.445, y: 0.63}
-      - {x: -0.375, y: 0.32999998}
-      - {x: -0.185, y: 0.21}
-      - {x: -0.385, y: 0.04}
-      - {x: -0.45499998, y: -0.37}
-      - {x: -0.505, y: -0.51}
-      - {x: -0.505, y: -0.75}
-      - {x: -0.375, y: -0.83}
-      - {x: -0.315, y: -0.84}
-      - {x: -0.295, y: -0.84}
-      - {x: 0.125, y: -0.81}
-      - {x: 0.225, y: -0.84}
-      - {x: 0.415, y: -0.84}
-      - {x: 0.505, y: -0.83}
-      - {x: 0.505, y: -0.66999996}
-      - {x: 0.42499998, y: -0.58}
+  m_Offset: {x: -0.0023390055, y: 0.08888161}
+  m_Size: {x: 0.6497953, y: 1.8844731}
+  m_Direction: 0

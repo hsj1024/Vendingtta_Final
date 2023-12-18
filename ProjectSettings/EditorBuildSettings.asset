@@ -14,16 +14,17 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Chapter_Select/Select.unity
     guid: 9bd2faeca35662a40b2de14b88bf266c
-  - enabled: 0
+  - enabled: 1
     path: Assets/Chap1/CutScene/CutScene1.unity
     guid: c98ba6f3b2ab30c4392836a80caa1d6b
-  - enabled: 0
+  - enabled: 1
     path: Assets/Chap1/Chap1.unity
     guid: 6b3f84c8af892ee4bbf98b31444d3165
   - enabled: 1
     path: Assets/Chap1/Boss1_Chapter/Boss1_chapter.unity
     guid: eb04b6042e1c2c446886ade4ffe4dd9d
   - enabled: 1
+<<<<<<< Updated upstream
     path: Assets/Chap1/Boss1_Chapter/boss1_defeat.unity
     guid: 33b47fee1fd95ee4fad05a7f05ce2c7c
   - enabled: 1
@@ -32,4 +33,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Chap2/Chap2.unity
     guid: 8b37bb56775995143aa7d891d4287caa
+=======
+    path: Assets/Chap2/Chap2.unity
+    guid: 8b37bb56775995143aa7d891d4287caa
+  - enabled: 1
+    path: Assets/Chap2/Boss2.unity
+    guid: 1691d9bdbf2fdd44eb8e93fd0b86ebbf
+>>>>>>> Stashed changes
   m_configObjects: {}
