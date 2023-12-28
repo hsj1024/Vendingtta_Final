@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using System; // 이 줄을 추가하세요
 
-public class Die : MonoBehaviour
+public class DieBoss1 : MonoBehaviour
 {
     public Image blackImage; // 검정색 이미지
     public TextMeshProUGUI dieText; // DIE 텍스트
@@ -14,12 +14,14 @@ public class Die : MonoBehaviour
     public TextMeshProUGUI retry;
     public float fadeDuration = 1.0f; // 페이드 인 시간
     private bool isDead = false; // 플레이어가 죽었는지 체크
-    public GameObject player;
+   
+    //public GameObject player;
+    //public MainGameController mainGameController; // MainGameController에 대한 참조
 
 
     public static event Action PlayerDiedEvent; // 죽음 이벤트
 
-   
+
 
     void Update()
     {
@@ -50,8 +52,8 @@ public class Die : MonoBehaviour
 
     public void next1()
     {
-        
-      SceneManager.LoadScene("Chapter_Select/Select");
+
+        SceneManager.LoadScene("Chapter_Select/Select");
 
     }
 
@@ -75,6 +77,11 @@ public class Die : MonoBehaviour
     public void PlayerDied()
     {
         isDead = true;
-  
+        SceneManager.LoadScene("Chap1/Boss1_Chapter/boss1_defeat");
+
+
+
+
+
     }
 }

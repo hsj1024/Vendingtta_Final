@@ -134,8 +134,8 @@ GameObject:
   - component: {fileID: 133504613}
   - component: {fileID: 133504617}
   - component: {fileID: 133504615}
-  - component: {fileID: 133504614}
   - component: {fileID: 133504616}
+  - component: {fileID: 133504618}
   m_Layer: 14
   m_Name: Die
   m_TagString: Untagged
@@ -164,31 +164,6 @@ RectTransform:
   m_AnchoredPosition: {x: 24.856966, y: -27.05268}
   m_SizeDelta: {x: 2472.36, y: 1802.07}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &133504614
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 133504612}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39ae48fd05e4b0641a1a72592c3be5e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  blackImage: {fileID: 133504615}
-  dieText: {fileID: 565121218}
-  Title: {fileID: 154505986}
-  exit: {fileID: 1470053871}
-  Retry: {fileID: 1485819497}
-  retry: {fileID: 217352409}
-  fadeDuration: 1
-  boss1: {fileID: 0}
-  boss2: {fileID: 0}
-  boss3: {fileID: 0}
-  boss4: {fileID: 0}
-  player: {fileID: 0}
-  mainGameController: {fileID: 0}
 --- !u!114 &133504615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -279,6 +254,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 133504612}
   m_CullTransparentMesh: 1
+--- !u!114 &133504618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 133504612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33949c9d054ec514c9e1b4acc512faeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blackImage: {fileID: 133504615}
+  dieText: {fileID: 565121218}
+  Title: {fileID: 154505986}
+  exit: {fileID: 1470053871}
+  Retry: {fileID: 1485819497}
+  retry: {fileID: 217352409}
+  fadeDuration: 1
 --- !u!1 &154505985
 GameObject:
   m_ObjectHideFlags: 0
@@ -342,8 +336,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 133504614}
-        m_TargetAssemblyTypeName: Die, Assembly-CSharp
+      - m_Target: {fileID: 133504618}
+        m_TargetAssemblyTypeName: DieBoss1, Assembly-CSharp
         m_MethodName: next2
         m_Mode: 1
         m_Arguments:
@@ -1042,8 +1036,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.775849, y: 0.48200002}
   m_AnchorMax: {x: 0.775849, y: 0.48200002}
-  m_AnchoredPosition: {x: -251, y: 6.8944}
-  m_SizeDelta: {x: 160, y: 34.03}
+  m_AnchoredPosition: {x: -231.26, y: 6.8944}
+  m_SizeDelta: {x: 124.78, y: 34.03}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1485819497
 MonoBehaviour:
@@ -1089,8 +1083,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 133504614}
-        m_TargetAssemblyTypeName: Die, Assembly-CSharp
+      - m_Target: {fileID: 133504618}
+        m_TargetAssemblyTypeName: DieBoss1, Assembly-CSharp
         m_MethodName: next3
         m_Mode: 1
         m_Arguments:

@@ -33,7 +33,7 @@ public class cable : MonoBehaviour
         if (!returning)
         {
             // 타겟 위치로 이동
-            Debug.Log("여기");
+            
             transform.position = Vector3.MoveTowards(transform.position, targetPoint.transform.position, speed * Time.deltaTime);
 
             if (Vector3.Distance(transform.position, targetPoint.transform.position) < 0.1f)

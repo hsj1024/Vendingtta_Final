@@ -270,7 +270,11 @@ public class Player2 : MonoBehaviour
     private IEnumerator PerformPopHeadKill()
     {
         // 카메라 확대
-       
+        MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
+        if (cameraScript != null)
+        {
+            //cameraScript.StartCloseUp(targetMonster.transform); // 몬스터에게 카메라 확대
+        }
 
         // 팝헤드킬 이미지 표시
         PopHeadKillImage();
@@ -365,7 +369,7 @@ public class Player2 : MonoBehaviour
         }
         else if (collision.CompareTag("cable") || collision.CompareTag("pop"))
         {
-            Debug.Log("스턴 상태 1.5초 멈춤");
+            //Debug.Log("스턴 상태 1.5초 멈춤");
             StartCoroutine(StunPlayer(1.5f)); // 0.5초 동안 플레이어를 스턴 상태로 만듭니다.
             //StartCoroutine(BlinkEffect(1f, 0.1f)); // 예시: 1초 동안 0.1초 간격으로 깜빡임
 

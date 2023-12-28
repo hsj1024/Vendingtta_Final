@@ -11,7 +11,7 @@ public class Boss2Controller : MonoBehaviour
     //public float offsetToPlayer; // 플레이어에 대한 보스의 오프셋
     public GameObject[] spawnPoints; // 발사 위치 배열
     public float moveSpeed = 5f; // 보스의 이동 속도
-    public float cableSpawnDelay = 2f; // 케이블이 재생성되기까지의 지연 시간
+    public float cableSpawnDelay = 1f; // 케이블이 재생성되기까지의 지연 시간
 
     private float lastAttackTime;
     private int lastSpawnIndex = -1;
@@ -45,7 +45,7 @@ public class Boss2Controller : MonoBehaviour
         {
             if (Random.value > 0.5f) // 50% 확률로 케이블 공격 선택
             {
-                Debug.Log("케이블 공격");
+                //Debug.Log("케이블 공격");
                 AttackPlayer(); // 케이블 공격 수행
 
             }
@@ -81,7 +81,7 @@ public class Boss2Controller : MonoBehaviour
     // 케이블 공격
     void AttackPlayer()
     {
-        Debug.Log("케이블 공격 실행");
+        //Debug.Log("케이블 공격 실행");
 
         GameObject spawnPoint = ChooseSpawnPoint();
         Vector3 hitPosition = spawnPoint.transform.position;
@@ -90,11 +90,11 @@ public class Boss2Controller : MonoBehaviour
         GameObject hitArea = Instantiate(CablehitAreaPrefab, hitPosition, Quaternion.identity);
         if (hitArea != null)
         {
-            Debug.Log("피격 범위 스프라이트 생성됨: " + hitArea.name);
+            //Debug.Log("피격 범위 스프라이트 생성됨: " + hitArea.name);
         }
         else
         {
-            Debug.LogError("피격 범위 스프라이트 생성 실패!");
+            //Debug.LogError("피격 범위 스프라이트 생성 실패!");
         }
 
         // 피격 범위 스프라이트가 나타나는 시간 후에 케이블 생성

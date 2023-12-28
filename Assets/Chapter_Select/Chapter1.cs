@@ -9,6 +9,6 @@ public class Chapter1 : MonoBehaviour
     }
     public void LoadChapter2()
     {
-        SceneManager.LoadScene("Chap2/Boss2");
+        SceneManager.LoadScene("Chap2/CutScene2/CutScene2");
     }
 }
