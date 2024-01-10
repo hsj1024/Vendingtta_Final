@@ -35,6 +35,7 @@ TagManager:
   - TargetPoint
   - cable
   - pop
+  - TransparentWall
   layers:
   - Default
   - TransparentFX

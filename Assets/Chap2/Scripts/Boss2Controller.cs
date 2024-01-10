@@ -1,9 +1,17 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Boss2Controller : MonoBehaviour
 {
     public GameObject cablePrefab; // 인스펙터에서 설정할 수 있는 케이블 프리팹
+    public GameObject ballRainHitAreaPrefab;
+
+    public GameObject transparentWall; // 투명 벽에 대한 참조
+    private bool isEnhancedSkillActive = false; // 강화 스킬 활성화 여부
+    private bool hasEnhancedSkillActivatedOnce = false; // 강화 스킬이 한 번이라도 활성화되었는지
+    private bool isSkillActive = false; // 현재 스킬이 실행 중인지 여부를 나타내는 플래그
+    public GameObject[] EnhancedSpawnPoints; // 강화 스킬에 사용될 스폰 포인트 배열
 
 
     public float attackDelay = 2f; // 공격 간격
@@ -24,6 +32,14 @@ public class Boss2Controller : MonoBehaviour
     public GameObject PophitAreaPrefab; // 피격 범위 프리팹
     public GameObject CablehitAreaPrefab; // 피격 범위 프리팹
 
+    // 파편 뭉치 비
+    public Transform fragmentSpawnPoint; // 키보드 파편 뭉치 스폰 위치
+    public float fragmentSpawnDelay = 1.5f; // 스킬 발동 지연 시간
+    public float fragmentRadius = 5f; // 플레이어 주변 키보드 파편의 반경
+
+    public GameObject keyboardFragmentPrefab; // 키보드 파편 뭉치 프리팹
+
+    public GameObject nonMotionSpritePrefab; // 비 모션 스프라이트 프리팹
 
     public void RespawnCable()
     {
@@ -39,27 +55,54 @@ public class Boss2Controller : MonoBehaviour
 
     void Update()
     {
-
-        // 현재 시간이 마지막 공격 시간 + 지연 시간보다 큰 경우에만 공격을 수행
-        if (Time.time > lastAttackTime + attackDelay)
+        if (Time.time > lastAttackTime + attackDelay && !isSkillActive)
         {
-            if (Random.value > 0.5f) // 50% 확률로 케이블 공격 선택
+            // 강화 스킬이 활성화된 경우
+            if (isEnhancedSkillActive)
             {
-                //Debug.Log("케이블 공격");
-                AttackPlayer(); // 케이블 공격 수행
-
+                ActivateEnhancedCableSkill();
+                hasEnhancedSkillActivatedOnce = true;
+                isEnhancedSkillActive = false;
+            }
+            else if (hasEnhancedSkillActivatedOnce)
+            {
+                // 무작위로 일반 스킬 또는 강화 스킬 실행
+                if (Random.value > 0.5f)
+                {
+                    ActivateEnhancedCableSkill();
+                }
+                else
+                {
+                    ExecuteNormalSkillLogic();
+                }
             }
             else
             {
-                LaunchObstacleAttack(); // 장애물 공격 수행
-
+                // 일반 스킬 실행
+                ExecuteNormalSkillLogic();
             }
-            lastAttackTime = Time.time; // 마지막 공격 시간 업데이트
+            lastAttackTime = Time.time;
         }
-
-        UpdateTargetPointPosition();
-
     }
+
+    void ExecuteNormalSkillLogic()
+    {
+        // 평소 스킬 로직
+        if (Random.value > 0.2f)
+        {
+            AttackPlayer();
+        }
+        else if (Random.value > 0.5f)
+        {
+            LaunchObstacleAttack();
+        }
+        else
+        {
+            StartCoroutine(DelayedLaunchKeyboardFragment());
+        }
+    }
+
+    
     private void UpdateTargetPointPosition()
     {
         // 카메라 뷰포트의 오른쪽 끝 y축 정중앙에 타겟 포인트 위치 설정
@@ -69,13 +112,45 @@ public class Boss2Controller : MonoBehaviour
         targetPoint.transform.position = targetPosition;
     }
 
+    IEnumerator DelayedLaunchKeyboardFragment()
+    {
+        yield return new WaitForSeconds(fragmentSpawnDelay);
+
+        // 키보드 파편 뭉치 스킬 발동
+        LaunchKeyboardFragment();
+    }
+
+    void LaunchKeyboardFragment()
+    {
+        // 카메라 이동에 따라 스폰 위치를 카메라의 정중앙 상단으로 설정
+        Vector3 cameraTopCenter = new Vector3(Camera.main.transform.position.x,
+                                              Camera.main.transform.position.y + Camera.main.orthographicSize,
+                                              Camera.main.transform.position.z);
+        GameObject fragment = Instantiate(keyboardFragmentPrefab, cameraTopCenter, Quaternion.identity);
+
+        // 키보드 파편 뭉치가 나간 직후 플레이어 위치에 피격 범위를 표시하고 1.5초 후에 사라지게 함
+        StartCoroutine(ShowHitAreaAndSpawnRainPrefab(player.transform.position));
+    }
+
+
+
+    IEnumerator ShowHitAreaAndSpawnRainPrefab(Vector3 targetPosition)
+    {
+        // 새로운 피격 범위 스프라이트 사용
+        GameObject hitArea = Instantiate(ballRainHitAreaPrefab, targetPosition, Quaternion.identity);
+        yield return new WaitForSeconds(1.5f);
+        Destroy(hitArea);
+
+        // 피격 범위 사라진 후 비 프리팹 생성
+        Instantiate(nonMotionSpritePrefab, targetPosition, Quaternion.identity);
+    }
 
     private void SpawnCable()
     {
         GameObject spawnPoint = ChooseSpawnPoint();
         GameObject newCable = Instantiate(cablePrefab, spawnPoint.transform.position, Quaternion.identity);
         cable cableScript = newCable.GetComponent<cable>();
-        cableScript.Launch(targetPoint, spawnPoint, this); // 올바른 returnPoint를 전달
+        cableScript.Launch(Vector3.right, this.gameObject, this); // 직선 이동 방향을 Vector3.right로 설정
     }
 
     // 케이블 공격
@@ -113,7 +188,7 @@ public class Boss2Controller : MonoBehaviour
 
         // 필요한 설정 후 케이블 활성화
         cable cableScript = newCable.GetComponent<cable>();
-        cableScript.Launch(targetPoint, spawnPoint, this);
+        cableScript.Launch(Vector3.right, this.gameObject, this); // 직선 이동 방향을 Vector3.right로 설정
         newCable.SetActive(true); // 케이블 활성화
     }
 
@@ -166,29 +241,7 @@ public class Boss2Controller : MonoBehaviour
         return spawnPoints[lastSpawnIndex];
     }
 
-    /*Vector3 CalculateTargetPosition()
-    {
-        Vector3 playerPosition = player.transform.position;
-        float yOffset;
-
-        switch (player.GetComponent<PlayerController>().playerPosition)
-        {
-            case PlayerController.PlayerPosition.Top:
-                yOffset = 1.0f; // 상단부 위치의 Y 오프셋
-                break;
-            case PlayerController.PlayerPosition.Middle:
-                yOffset = 0.0f; // 중간부 위치의 Y 오프셋
-                break;
-            case PlayerController.PlayerPosition.Bottom:
-                yOffset = -1.0f; // 하단부 위치의 Y 오프셋
-                break;
-            default:
-                yOffset = 0.0f; // 기본값은 중간부로 설정
-                break;
-        }
-
-        return new Vector3(playerPosition.x, playerPosition.y + yOffset, playerPosition.z);
-    }*/
+    
     // 케이블과 부딫혔을 때 보스와 플레이어간의 거리 가깝게 조정
     public void OnCableHit()
     {
@@ -198,4 +251,101 @@ public class Boss2Controller : MonoBehaviour
         newPosition.x = Mathf.Lerp(newPosition.x, player.position.x, 0.1f); // X축으로 조금 이동
         transform.position = newPosition;
     }
+
+    // 올가미 강화 스킬
+
+    // 투명 벽 콜라이더 생성 위와 닿으면 강화스킬 실행
+    void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Collided with: " + other.gameObject.tag);
+
+        if (other.CompareTag("TransparentWall"))
+        {
+            Debug.Log("TransparentWall hit!");
+            isEnhancedSkillActive = true;
+        }
+    }
+
+
+
+    public void ActivateEnhancedCableSkill()
+    {
+        isSkillActive = true; // 스킬 실행 중 표시
+
+        // 강화 스킬 스폰 포인트 중 무작위로 2개 선택
+        List<int> selectedIndexes = new List<int>();
+        while (selectedIndexes.Count < 2)
+        {
+            int randomIndex = Random.Range(0, EnhancedSpawnPoints.Length);
+            if (!selectedIndexes.Contains(randomIndex))
+            {
+                selectedIndexes.Add(randomIndex);
+            }
+        }
+
+        // 선택된 스폰 포인트에서 케이블 발사
+        foreach (int index in selectedIndexes)
+        {
+            Vector3 spawnPosition = EnhancedSpawnPoints[index].transform.position;
+            CreateHitAreaAt(spawnPosition);
+            StartCoroutine(DelayedLaunchCableAt(spawnPosition, 0.5f));
+        }
+
+        StartCoroutine(ResetSkillActiveFlag());
+    }
+
+    IEnumerator DelayedLaunchCableAt(Vector3 position, float delay)
+{
+    yield return new WaitForSeconds(delay);
+    LaunchCableAt(position);
+}
+
+void LaunchCableAt(Vector3 position)
+{
+    GameObject newCable = Instantiate(cablePrefab, position, Quaternion.identity);
+    cable cableScript = newCable.GetComponent<cable>();
+    cableScript.Launch(Vector3.right, this.gameObject, this); // 직선 이동 방향을 Vector3.right로 설정
+
+    }
+
+
+    void CreateHitAreaAt(Vector3 position)
+    {
+        // 피격 범위 스프라이트 생성
+        GameObject hitArea = Instantiate(CablehitAreaPrefab, position, Quaternion.identity);
+        Destroy(hitArea, 0.5f); // 0.5초 후에 피격 범위 제거
+    }
+    
+
+
+    
+    IEnumerator ResetSkillActiveFlag()
+    {
+        // 스킬 실행 후 정리
+        yield return new WaitForSeconds(1f);
+        isSkillActive = false;
+
+        // 임시로 생성된 targetDummy 객체가 있다면 파괴
+        GameObject targetDummy = GameObject.Find("TargetDummy");
+        if (targetDummy != null)
+        {
+            Destroy(targetDummy);
+        }
+    }
+
+
+
+    Vector3 GetRandomPosition()
+    {
+        // 화면 내에서 무작위 위치 계산
+        float randomX = Random.Range(0f, Screen.width);
+        float randomY = Random.Range(0f, Screen.height);
+        Vector3 randomScreenPosition = new Vector3(randomX, randomY, 0);
+
+        // 스크린 좌표를 월드 좌표로 변환
+        Vector3 randomWorldPosition = Camera.main.ScreenToWorldPoint(randomScreenPosition);
+        return randomWorldPosition;
+    }
+
+
 }

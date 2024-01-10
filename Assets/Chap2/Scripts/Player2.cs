@@ -10,6 +10,9 @@ using UnityEngine.UI;//
 
 public class Player2 : MonoBehaviour
 {
+    public Boss2Controller bossController;
+
+    
 
     [Header("Movement Settings")]
     [SerializeField]
@@ -86,6 +89,7 @@ public class Player2 : MonoBehaviour
         InitializeComponents();
         currentEffect = Instantiate(healthRecoveryEffectPrefab, transform.position + Vector3.up * 0.5f, Quaternion.identity, transform);
         currentEffect.SetActive(false); // 초기에는 비활성화
+        bossController = FindObjectOfType<Boss2Controller>();
 
     }
 
@@ -380,6 +384,13 @@ public class Player2 : MonoBehaviour
             Die();
             
         }
+        // 투명 벽과의 충돌 감지
+        else if (collision.CompareTag("TransparentWall"))
+        {
+            Debug.Log("벽 충돌");
+            // 보스 컨트롤러를 통해 강화 스킬을 활성화합니다.
+            bossController.ActivateEnhancedCableSkill();
+        }
     }
 
     IEnumerator BlinkEffect(float blinkInterval)
@@ -404,6 +415,7 @@ public class Player2 : MonoBehaviour
     {
         isStunnedBoss2 = true;
         rb.velocity = Vector2.zero; // 현재 움직임을 멈춥니다.
+        
 
         StartCoroutine(BlinkEffect(0.1f)); // 깜빡임 효과
 
