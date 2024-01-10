@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Threading;
+using TMPro.Examples;
 using UnityEngine;
 
 public class Mob : MonoBehaviour
@@ -70,6 +71,7 @@ public class Mob : MonoBehaviour
     public GameObject spacePressPrefab; // Space_Press 프리팹 참조
     private GameObject currentSpaceObject; // 현재 활성화된 Space 객체
     public Vector3 prefabOffset; // 인스펙터에서 조절 가능한 프리팹 위치 오프셋
+    private MoveCamera moveCamera;
 
 
 
@@ -126,11 +128,6 @@ public class Mob : MonoBehaviour
             // 다른 몬스터들의 정지 상태를 해제하는 로직 추가
             FreezeAllMobs(false);
 
-            /*MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
-            if (cameraScript != null)
-            {
-                cameraScript.EndCloseUp();
-            }*/
         }
         else
         {
@@ -147,7 +144,14 @@ public class Mob : MonoBehaviour
                 Destroy(gameObject);
             }
         }
+
+        if (isPopHeadKillActive && moveCamera != null)
+        {
+            moveCamera.EndCloseUp();
+        }
     }
+
+
     // 팝헤드킬 상태에서 플레이어에게 공격받으면 호출되는 메서드
     public void OnPopHeadKill()
     {
@@ -178,12 +182,11 @@ public class Mob : MonoBehaviour
         }
 
 
-        // 팝헤드킬 상태 시작 시 카메라 확대
-       /* MoveCamera cameraScript = Camera.main.GetComponent<MoveCamera>();
-        if (cameraScript != null)
+        if (moveCamera != null)
         {
-            cameraScript.StartCloseUp(transform); // 카메라를 이 몬스터에게 확대
-        }*/
+            moveCamera.StartCloseUp(transform);
+        }
+
 
         // 팝헤드킬 상태 시작 시 space 객체 활성화
         currentSpaceObject.SetActive(true);
@@ -210,13 +213,10 @@ public class Mob : MonoBehaviour
             playerComponent.SetTargetMonster(null);
         }
 
-       /* // 팝헤드킬 상태 종료 시 카메라 원래대로
-        if (cameraScript != null)
+        if (moveCamera != null)
         {
-            cameraScript.EndCloseUp();
-
+            moveCamera.EndCloseUp();
         }
-       */
 
         // 팝헤드킬 상태 종료 시 space 객체 비활성화
         currentSpaceObject.SetActive(false);
@@ -352,6 +352,7 @@ public class Mob : MonoBehaviour
         currentSpaceObject = Instantiate(spacePrefab, transform.position + prefabOffset, Quaternion.identity);
         currentSpaceObject.transform.SetParent(transform);
         currentSpaceObject.SetActive(false); // 초기에는 비활성화
+        moveCamera = FindObjectOfType<MoveCamera>();
     }
 
 

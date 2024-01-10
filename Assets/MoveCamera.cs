@@ -30,6 +30,7 @@ public class MoveCamera : MonoBehaviour
 
         originalSize = cam.orthographicSize; // 초기 카메라 크기
         originalPosition = transform.position; // 초기 카메라 위치
+       
 
         // 플레이어의 Transform을 찾아 초기화
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
@@ -61,9 +62,9 @@ public class MoveCamera : MonoBehaviour
             -5f
         );
     }
-}
 
-   /* public void StartCloseUp(Transform monsterTransform)
+
+    public void StartCloseUp(Transform monsterTransform)
     {
         // 팝헤드킬 상태로 설정
         isCloseUp = true;
@@ -82,7 +83,6 @@ public class MoveCamera : MonoBehaviour
             yield return null;
         }
     }
-}
 
     public void EndCloseUp()
     {
@@ -91,22 +91,23 @@ public class MoveCamera : MonoBehaviour
             return;
         }
 
-        // 팝헤드킬 상태 종료
         isCloseUp = false;
         target = player; // 타겟을 플레이어로 변경
+
+        // 카메라를 원래 상태로 되돌림
+        StartCoroutine(ResetCameraToOriginalState());
     }
 
-    private void ResetCameraToOriginalState()
+    private IEnumerator ResetCameraToOriginalState()
     {
-        // 카메라 크기와 위치를 원래대로 복원
-        cam.orthographicSize = originalSize;
+        while (!isCloseUp && cam.orthographicSize < originalSize)
+        {
+            cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, originalSize, Time.deltaTime * closeUpSpeed);
+            yield return null;
+        }
+
         transform.position = originalPosition;
-
-        // 팝헤드킬 상태와 관련된 변수들 초기화
         closeUpTarget = null;
-        isCloseUp = false;
-
-        // 카메라 타겟을 플레이어로 변경
         target = player;
     }
-}*/
+}

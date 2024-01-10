@@ -193,15 +193,18 @@ public class Mob3 : MonoBehaviour
 
     public void Die()
     {
-        if (isPopHeadKillActive)
-        {
-            // 팝헤드킬 상태일 때의 사망 처리
-            isPopHeadKillActive = false;
-            Mob.isGlobalStop = false;
-            // 팝헤드킬 상태에서만 DeathAnimation 코루틴 호출
-            StartCoroutine(DeathAnimation());
-        }
+        // 팝헤드킬 상태 강제 설정
+        isPopHeadKillActive = true;
+        Mob3.isGlobalStop = true;
+
+        // 코인 드랍
+        DropCoin(3);
+
+        // 사망 애니메이션 실행
+        StartCoroutine(DeathAnimation());
     }
+
+
 
 
     public void AttackByPlayer()
@@ -265,14 +268,8 @@ public class Mob3 : MonoBehaviour
 
             // 아래로 움직입니다.
             Vector3 newPosition = originalPosition;
-            newPosition.y -= ratio;  // 아래로 움직이는 정도를 조절하려면 이 값을 조절하세요.
+            newPosition.y -= ratio * 0.5f;  // 아래로 움직이는 정도를 조절하려면 이 값을 조절하세요.
             transform.position = newPosition;
-
-            if (ratio > 0.5 && !isCoinDropped) // 코인이 아직 떨어지지 않았다면
-            {
-                DropCoin(3); // 팝헤드킬 상태일 때 코인 3개 드랍
-                isCoinDropped = true; // 코인을 떨어뜨렸다고 표시합니다.
-            }
 
             elapsedTime += Time.deltaTime;
             yield return null;
@@ -281,6 +278,7 @@ public class Mob3 : MonoBehaviour
         OnDeath?.Invoke();
         Destroy(gameObject);
     }
+
 
 
 
